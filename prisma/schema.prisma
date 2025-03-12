@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                       Int                        @id @default(autoincrement())
+  email                    String                     @unique
+  name                     String?
+  password                 String
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  cefrLevel                CEFRLevel                  @default(A1)
+  role                     Role                       @default(USER)
+  userWordProgress         UserWordProgress[]
+  userGrammarTopicProgress UserGrammarTopicProgress[]
+  userSentenceProgress     UserSentenceProgress[]
+}
+
+model Word {
+  id               Int                @id @default(autoincrement())
+  word             String
+  definition       String
+  partOfSpeech     PartOfSpeech
+  cefrLevel        CEFRLevel
+  sentences        Sentence[]
+  userWordProgress UserWordProgress[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@unique([word, partOfSpeech])
+}
+
+model Sentence {
+  id                   Int                    @id @default(autoincrement())
+  englishSentence      String
+  russianTranslation   String
+  grammarTopicId       Int
+  grammarTopic         GrammarTopic           @relation(fields: [grammarTopicId], references: [id])
+  wordId               Int
+  word                 Word                   @relation(fields: [wordId], references: [id])
+  cefrLevel            CEFRLevel
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  userSentenceProgress UserSentenceProgress[]
+}
+
+model GrammarTopic {
+  id                       Int                        @id @default(autoincrement())
+  name                     String                     @unique
+  description              String?
+  cefrLevel                CEFRLevel
+  category                 GrammarTopicCategory
+  sentences                Sentence[]
+  userGrammarTopicProgress UserGrammarTopicProgress[]
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+}
+
+model UserWordProgress {
+  id             Int       @id @default(autoincrement())
+  user           User      @relation(fields: [userId], references: [id])
+  userId         Int
+  word           Word      @relation(fields: [wordId], references: [id])
+  wordId         Int
+  createdAt      DateTime  @default(now())
+  lastStudied    DateTime?
+  nextReviewDate DateTime?
+  reviewCount    Int       @default(0)
+
+  @@unique([userId, wordId])
+}
+
+model UserGrammarTopicProgress {
+  id             Int          @id @default(autoincrement())
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int
+  grammarTopic   GrammarTopic @relation(fields: [grammarTopicId], references: [id])
+  grammarTopicId Int
+  createdAt      DateTime     @default(now())
+  lastStudied    DateTime?
+  nextReviewDate DateTime?
+  reviewCount    Int          @default(0)
+
+  @@unique([userId, grammarTopicId])
+}
+
+model UserSentenceProgress {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  sentence    Sentence  @relation(fields: [sentenceId], references: [id])
+  sentenceId  Int
+  createdAt   DateTime  @default(now())
+  lastStudied DateTime?
+  isCorrect   Boolean   @default(false)
+
+  @@unique([userId, sentenceId])
+}
+
+enum PartOfSpeech {
+  noun // Существительное
+  verb // Глагол
+  adjective // Прилагательное
+  adverb // Наречие
+  pronoun // Местоимение
+  preposition // Предлог
+  conjunction // Союз
+  interjection // Междометие
+  determiner // Определитель (артикли, указательные местоимения и т.д.)
+  auxiliaryVerb // Вспомогательный глагол
+  modalVerb // Модальный глагол
+  article // Артикль (определенный и неопределенный)
+  numeral // Числительное
+  participle // Причастие
+  gerund // Герундий
+  infinitiveMarker
+}
+
+enum CEFRLevel {
+  A1
+  A2
+  B1
+  B2
+  C1Plus @map("C1+")
+}
+
+enum GrammarTopicCategory {
+  VerbsAndTenses      @map("Verbs & tenses") // Глаголы и времена
+  ClausesAndQuestions @map("Clauses & questions") // Предложения и вопросы
+  ModalVerbs          @map("Modal verbs") // Модальные глаголы
+  NonfiniteVerbs      @map("Nonfinite verbs") // Нефинитные формы глагола
+  Nouns // Существительные
+  Adjectives // Прилагательные
+  Adverbs // Наречия
+  OtherPartsOfSpeech  @map("Other parts of speech") // Другие части речи
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
