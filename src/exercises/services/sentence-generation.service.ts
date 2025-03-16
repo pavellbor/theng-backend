@@ -4,7 +4,7 @@ import { OpenAIService } from 'src/openai/openai.service';
 interface GenerateSentenceParams {
   word: string;
   partOfSpeech: string;
-  definition: string;
+  russianTranslation: string;
   grammarTopic: string;
   cefrLevel: string;
 }
@@ -14,7 +14,8 @@ export class SentenceGenerationService {
   constructor(private openAIService: OpenAIService) {}
 
   async generateSentence(params: GenerateSentenceParams) {
-    const { word, partOfSpeech, definition, grammarTopic, cefrLevel } = params;
+    const { word, partOfSpeech, russianTranslation, grammarTopic, cefrLevel } =
+      params;
 
     const prompt = `генерируй, пожалуйста, **простое и понятное** английское предложение, **которое звучит как пример реального использования языка**, используя слово "${word}".
 
@@ -43,7 +44,7 @@ export class SentenceGenerationService {
                           - Стремись к **максимальной ясности и естественности**, даже если это означает пожертвовать некоторой "оригинальностью" в пользу "реалистичности".
 
                         5. **Использование слова в естественном контексте:**
-                          - Предложение должно **логично и уместно использовать слово** "${word}" в соответствии с его частью речи "${partOfSpeech}" и определением "${definition}" **в контексте, который звучит реалистично**.
+                          - Предложение должно **логично и уместно использовать слово** "${word}" в соответствии с его частью речи "${partOfSpeech}" и определением "${russianTranslation}" **в контексте, который звучит реалистично**.
 
                         6. **Краткость:**
                           - Предложение должно быть **достаточно кратким**, чтобы быть легко запоминающимся и  представлять собой хороший, лаконичный пример реального использования.

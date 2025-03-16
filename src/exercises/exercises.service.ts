@@ -34,8 +34,8 @@ export class ExerciseService {
       await this.sentenceGenerationService.generateSentence({
         word: word.word,
         partOfSpeech: word.partOfSpeech,
+        russianTranslation: word.russianTranslation,
         cefrLevel: cefrLevel,
-        definition: word.definition,
         grammarTopic: grammarTopic.name,
       });
 
@@ -84,9 +84,9 @@ export class ExerciseService {
       englishSentence: sentence.englishSentence,
       russianTranslation: sentence.russianTranslation,
       grammarTopicName: sentence.grammarTopic.name,
-      word: sentence.word.definition,
+      word: sentence.word.russianTranslation,
       userTranslation: userTranslation,
-      cefrLevel: sentence.grammarTopic.cefrLevel, // TODO
+      cefrLevel: sentence.grammarTopic.cefrLevel, // TODO: передавать cefrLevel из параметров
     });
 
     const userProgress =
@@ -98,6 +98,7 @@ export class ExerciseService {
         isGrammarTopicCorrect: completion.grammarTopic.isCorrect,
         isSentenceCorrect: completion.overall.isCorrect,
         isWordCorrect: completion.word.isCorrect,
+        lastTranslation: userTranslation,
       });
 
     return userRole === Role.USER

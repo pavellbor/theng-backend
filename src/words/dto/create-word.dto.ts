@@ -11,7 +11,7 @@ export class CreateWordDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  definition: string;
+  russianTranslation: string;
 
   @ApiProperty({ enum: PartOfSpeech })
   @IsEnum(PartOfSpeech)

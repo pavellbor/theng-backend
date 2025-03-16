@@ -9,6 +9,9 @@ export class UserSentenceProgressService {
     userId: number,
     sentenceId: number,
     isCorrect: boolean,
+    isGrammarTopicCorrect: boolean,
+    isWordCorrect: boolean,
+    lastTranslation: string,
   ) {
     const existingUserProgress =
       await this.prismaService.userSentenceProgress.findUnique({
@@ -17,23 +20,27 @@ export class UserSentenceProgressService {
         },
       });
 
+    const newUserProgress = {
+      isCorrect: isCorrect,
+      grammarCorrect: isGrammarTopicCorrect,
+      wordCorrect: isWordCorrect,
+      lastTranslation: lastTranslation,
+      lastStudied: new Date(),
+    };
+
     if (existingUserProgress) {
       return this.prismaService.userSentenceProgress.update({
         where: {
           userId_sentenceId: { userId, sentenceId },
         },
-        data: {
-          isCorrect: isCorrect,
-          lastStudied: new Date(),
-        },
+        data: newUserProgress,
       });
     } else {
       return this.prismaService.userSentenceProgress.create({
         data: {
           userId: userId,
           sentenceId: sentenceId,
-          isCorrect: isCorrect,
-          lastStudied: new Date(),
+          ...newUserProgress,
         },
       });
     }

@@ -22,23 +22,27 @@ model User {
   updatedAt                DateTime                   @updatedAt
   cefrLevel                CEFRLevel                  @default(A1)
   role                     Role                       @default(USER)
+  lastActive               DateTime                   @default(now())
   userWordProgress         UserWordProgress[]
   userGrammarTopicProgress UserGrammarTopicProgress[]
   userSentenceProgress     UserSentenceProgress[]
+
+  @@index([email])
 }
 
 model Word {
-  id               Int                @id @default(autoincrement())
-  word             String
-  definition       String
-  partOfSpeech     PartOfSpeech
-  cefrLevel        CEFRLevel
-  sentences        Sentence[]
-  userWordProgress UserWordProgress[]
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id                 Int                @id @default(autoincrement())
+  word               String
+  russianTranslation String
+  partOfSpeech       PartOfSpeech
+  cefrLevel          CEFRLevel
+  sentences          Sentence[]
+  userWordProgress   UserWordProgress[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   @@unique([word, partOfSpeech])
+  @@index([cefrLevel])
 }
 
 model Sentence {
@@ -53,6 +57,9 @@ model Sentence {
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
   userSentenceProgress UserSentenceProgress[]
+
+  @@index([cefrLevel])
+  @@index([wordId, grammarTopicId])
 }
 
 model GrammarTopic {
@@ -65,47 +72,64 @@ model GrammarTopic {
   userGrammarTopicProgress UserGrammarTopicProgress[]
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
+
+  @@index([cefrLevel, category])
 }
 
 model UserWordProgress {
   id             Int       @id @default(autoincrement())
-  user           User      @relation(fields: [userId], references: [id])
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         Int
-  word           Word      @relation(fields: [wordId], references: [id])
+  word           Word      @relation(fields: [wordId], references: [id], onDelete: Cascade)
   wordId         Int
   createdAt      DateTime  @default(now())
-  lastStudied    DateTime?
+  lastStudied    DateTime  @default(now())
   nextReviewDate DateTime?
   reviewCount    Int       @default(0)
+  successCount   Int       @default(0)
+  failureCount   Int       @default(0)
+  mastery        Float     @default(0) // От 0 до 1
 
   @@unique([userId, wordId])
+  @@index([userId, nextReviewDate])
+  @@index([mastery])
 }
 
 model UserGrammarTopicProgress {
   id             Int          @id @default(autoincrement())
-  user           User         @relation(fields: [userId], references: [id])
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         Int
-  grammarTopic   GrammarTopic @relation(fields: [grammarTopicId], references: [id])
+  grammarTopic   GrammarTopic @relation(fields: [grammarTopicId], references: [id], onDelete: Cascade)
   grammarTopicId Int
   createdAt      DateTime     @default(now())
-  lastStudied    DateTime?
+  lastStudied    DateTime     @default(now())
   nextReviewDate DateTime?
   reviewCount    Int          @default(0)
+  successCount   Int          @default(0)
+  failureCount   Int          @default(0)
+  mastery        Float        @default(0) // От 0 до 1
 
   @@unique([userId, grammarTopicId])
+  @@index([userId, nextReviewDate])
+  @@index([mastery])
 }
 
 model UserSentenceProgress {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
-  sentence    Sentence  @relation(fields: [sentenceId], references: [id])
-  sentenceId  Int
-  createdAt   DateTime  @default(now())
-  lastStudied DateTime?
-  isCorrect   Boolean   @default(false)
+  id              Int      @id @default(autoincrement())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int
+  sentence        Sentence @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
+  sentenceId      Int
+  createdAt       DateTime @default(now())
+  lastStudied     DateTime @default(now())
+  isCorrect       Boolean  @default(false)
+  lastTranslation String?
+  wordCorrect     Boolean  @default(false)
+  grammarCorrect  Boolean  @default(false)
 
   @@unique([userId, sentenceId])
+  @@index([userId, isCorrect])
+  @@index([createdAt])
 }
 
 enum PartOfSpeech {
@@ -124,7 +148,7 @@ enum PartOfSpeech {
   numeral // Числительное
   participle // Причастие
   gerund // Герундий
-  infinitiveMarker
+  infinitiveMarker // Частица "to"
 }
 
 enum CEFRLevel {

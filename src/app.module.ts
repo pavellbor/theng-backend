@@ -9,6 +9,8 @@ import { ExercisesModule } from './exercises/exercises.module';
 import { OpenAIModule } from './openai/openai.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserProgressModule } from './user-progress/user-progress.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { UpdateLastActiveInterceptor } from './users/interceptors/update-last-active.interceptor';
 
 @Module({
   imports: [
@@ -24,6 +26,12 @@ import { UserProgressModule } from './user-progress/user-progress.module';
       isGlobal: true,
     }),
     UserProgressModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: UpdateLastActiveInterceptor,
+    },
   ],
 })
 export class AppModule {}

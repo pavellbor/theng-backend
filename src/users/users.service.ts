@@ -47,6 +47,13 @@ export class UsersService {
     });
   }
 
+  updateLastActive(id: number) {
+    return this.prismaService.user.update({
+      where: { id },
+      data: { lastActive: new Date() },
+    });
+  }
+
   private async addHashedPassword<T extends CreateUserDto | UpdateUserDto>(
     dto: T,
   ) {

@@ -9,10 +9,7 @@ export class WordEntity implements Word {
   word: string;
 
   @ApiProperty()
-  definition: string;
-
-  @ApiProperty({ type: String, required: false, nullable: true })
-  russianTranslation: string | null;
+  russianTranslation: string;
 
   @ApiProperty({ enum: PartOfSpeech })
   partOfSpeech: PartOfSpeech;

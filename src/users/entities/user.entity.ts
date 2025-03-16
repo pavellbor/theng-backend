@@ -20,6 +20,9 @@ export class UserEntity implements User {
   @ApiProperty({ enum: Role })
   role: Role;
 
+  @ApiProperty({ type: Date })
+  lastActive: Date;
+
   @ApiProperty()
   createdAt: Date;
 

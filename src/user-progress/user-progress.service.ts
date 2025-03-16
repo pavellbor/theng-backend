@@ -3,6 +3,7 @@ import { UserGrammarTopicProgressService } from './services/user-grammar-topic-p
 import { UserWordProgressService } from './services/user-word-progress.service';
 import { UserSentenceProgressService } from './services/user-sentence-progress.service';
 import { CEFRLevel } from '@prisma/client';
+import { CefrLevelUpdateService } from './services/cefr-level-update.service';
 
 interface RecordSentencePracticeResultParams {
   userId: number;
@@ -12,6 +13,7 @@ interface RecordSentencePracticeResultParams {
   isSentenceCorrect: boolean;
   isGrammarTopicCorrect: boolean;
   isWordCorrect: boolean;
+  lastTranslation: string;
 }
 
 @Injectable()
@@ -20,6 +22,7 @@ export class UserProgressService {
     private userGrammarTopicProgressService: UserGrammarTopicProgressService,
     private userWordProgressService: UserWordProgressService,
     private userSentenceProgressService: UserSentenceProgressService,
+    private cefrLevelUpdateService: CefrLevelUpdateService,
   ) {}
 
   async recordSentencePracticeResult(
@@ -33,6 +36,7 @@ export class UserProgressService {
       isSentenceCorrect,
       isGrammarTopicCorrect,
       isWordCorrect,
+      lastTranslation,
     } = params;
 
     const userGrammarTopicProgress =
@@ -41,23 +45,33 @@ export class UserProgressService {
         grammarTopicId,
         isGrammarTopicCorrect,
       );
+
     const userWordProgress =
       await this.userWordProgressService.saveUserProgress(
         userId,
         wordId,
         isWordCorrect,
       );
+
     const userSentenceProgress =
       await this.userSentenceProgressService.saveUserProgress(
         userId,
         sentenceId,
         isSentenceCorrect,
+        isGrammarTopicCorrect,
+        isWordCorrect,
+        lastTranslation,
       );
+
+    const newCefrLevel =
+      await this.cefrLevelUpdateService.checkAndUpdateCefrLevel(userId);
 
     return {
       userGrammarTopicProgress,
       userWordProgress,
       userSentenceProgress,
+      userCefrLevelUpdated: !!newCefrLevel,
+      newCefrLevel,
     };
   }
 

@@ -14,10 +14,6 @@ export class JwtStrategy {
     try {
       const payload: JwtPayload = await this.jwtService.verifyAsync(token);
       const user = await this.userService.findOne(payload.sub);
-      if (!user) {
-        throw new UnauthorizedException();
-      }
-
       return user;
     } catch {
       throw new UnauthorizedException();

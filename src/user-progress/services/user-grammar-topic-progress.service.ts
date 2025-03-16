@@ -1,8 +1,8 @@
 import { PrismaService } from 'src/prisma/prisma.service';
-import { calculateNextReviewDate } from '../utils/calculate-next-review-date';
 import { CEFRLevel, GrammarTopic } from '@prisma/client';
 import { getRandomItem } from '../utils/get-random-item';
 import { Injectable } from '@nestjs/common';
+import { calculateProgressUpdate } from '../utils/calculate-progress-update';
 
 @Injectable()
 export class UserGrammarTopicProgressService {
@@ -20,27 +20,24 @@ export class UserGrammarTopicProgressService {
         },
       });
 
+    const newUserProgress = calculateProgressUpdate(
+      existingUserProgress,
+      isCorrect,
+    );
+
     if (existingUserProgress) {
       return this.prismaService.userGrammarTopicProgress.update({
         where: {
           userId_grammarTopicId: { userId, grammarTopicId },
         },
-        data: {
-          lastStudied: new Date(), // Обновляем дату
-          reviewCount: isCorrect ? { increment: 1 } : 1, // Сбрасываем на 1 при ошибке, иначе инкремент
-          nextReviewDate: calculateNextReviewDate(
-            isCorrect ? existingUserProgress.reviewCount + 1 : 1, // Используем 1 для расчета даты при ошибке, иначе инкремент
-          ),
-        },
+        data: newUserProgress,
       });
     } else {
       return this.prismaService.userGrammarTopicProgress.create({
         data: {
           userId: userId,
           grammarTopicId: grammarTopicId,
-          lastStudied: new Date(),
-          reviewCount: 1,
-          nextReviewDate: calculateNextReviewDate(1), // Расчет даты для первого повторения
+          ...newUserProgress,
         },
       });
     }
@@ -90,7 +87,7 @@ export class UserGrammarTopicProgressService {
     const availableTopicsForLevel =
       await this.prismaService.grammarTopic.findMany({
         where: {
-          cefrLevel, // Use user's CEFR level
+          cefrLevel,
           NOT: {
             userGrammarTopicProgress: {
               some: {
