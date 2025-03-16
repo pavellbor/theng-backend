@@ -48,33 +48,44 @@ export class UserGrammarTopicProgressService {
     cefrLevel: CEFRLevel,
   ): Promise<GrammarTopic | null> {
     const topicFromProgress = await this.getReviewDueGrammarTopic(userId);
-
     if (topicFromProgress) {
       return topicFromProgress;
     }
 
-    return this.getNewGrammarTopicForUser(userId, cefrLevel);
+    const newTopic = await this.getNewGrammarTopicForUser(userId, cefrLevel);
+    if (newTopic) {
+      return newTopic;
+    }
+
+    const nextLevelTopic = await this.getTopicFromNextLevel(userId, cefrLevel);
+    if (nextLevelTopic) {
+      return nextLevelTopic;
+    }
+
+    return this.getExistingTopicForUser(userId);
   }
 
   private async getReviewDueGrammarTopic(userId: number) {
     const now = new Date();
 
-    const progressItemsReadyForReview =
-      await this.prismaService.userGrammarTopicProgress.findMany({
+    const progressItemReadyForReview =
+      await this.prismaService.userGrammarTopicProgress.findFirst({
         where: {
           userId,
           nextReviewDate: {
             lte: now,
           },
         },
+        orderBy: {
+          mastery: 'asc',
+        },
         include: {
           grammarTopic: true,
         },
       });
 
-    if (progressItemsReadyForReview.length) {
-      const randomProgressItem = getRandomItem(progressItemsReadyForReview);
-      return randomProgressItem.grammarTopic;
+    if (progressItemReadyForReview) {
+      return progressItemReadyForReview.grammarTopic;
     }
 
     return null;
@@ -103,5 +114,36 @@ export class UserGrammarTopicProgressService {
     }
 
     return null;
+  }
+
+  private async getTopicFromNextLevel(userId: number, cefrLevel: CEFRLevel) {
+    const cefrLevels = Object.values(CEFRLevel);
+    const currentLevelIndex = cefrLevels.indexOf(cefrLevel);
+
+    if (currentLevelIndex >= cefrLevels.length - 1) {
+      return null;
+    }
+
+    const nextLevel = cefrLevels[currentLevelIndex + 1];
+    return this.getNewGrammarTopicForUser(userId, nextLevel);
+  }
+
+  private async getExistingTopicForUser(
+    userId: number,
+  ): Promise<GrammarTopic | null> {
+    const userTopic =
+      await this.prismaService.userGrammarTopicProgress.findFirst({
+        where: {
+          userId,
+        },
+        include: {
+          grammarTopic: true,
+        },
+        orderBy: {
+          mastery: 'asc',
+        },
+      });
+
+    return userTopic?.grammarTopic ?? null;
   }
 }

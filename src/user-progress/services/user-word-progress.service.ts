@@ -50,33 +50,44 @@ export class UserWordProgressService {
     cefrLevel: CEFRLevel,
   ): Promise<Word | null> {
     const wordFromProgress = await this.getReviewDueWord(userId);
-
     if (wordFromProgress) {
       return wordFromProgress;
     }
 
-    return this.getNewWordForUser(userId, cefrLevel);
+    const newWord = await this.getNewWordForUser(userId, cefrLevel);
+    if (newWord) {
+      return newWord;
+    }
+
+    const nextLevelWord = await this.getWordFromNextLevel(userId, cefrLevel);
+    if (nextLevelWord) {
+      return nextLevelWord;
+    }
+
+    return this.getExistingWordForUser(userId);
   }
 
   private async getReviewDueWord(userId: number): Promise<Word | null> {
     const now = new Date();
 
-    const progressItemsReadyForReview =
-      await this.prismaService.userWordProgress.findMany({
+    const progressItemReadyForReview =
+      await this.prismaService.userWordProgress.findFirst({
         where: {
           userId,
           nextReviewDate: {
             lte: now,
           },
         },
+        orderBy: {
+          mastery: 'asc',
+        },
         include: {
           word: true,
         },
       });
 
-    if (progressItemsReadyForReview.length) {
-      const randomWordProgressItem = getRandomItem(progressItemsReadyForReview);
-      return randomWordProgressItem.word;
+    if (progressItemReadyForReview) {
+      return progressItemReadyForReview.word;
     }
 
     return null;
@@ -104,5 +115,33 @@ export class UserWordProgressService {
     }
 
     return null;
+  }
+
+  private async getWordFromNextLevel(userId: number, cefrLevel: CEFRLevel) {
+    const cefrLevels = Object.values(CEFRLevel);
+    const currentLevelIndex = cefrLevels.indexOf(cefrLevel);
+
+    if (currentLevelIndex >= cefrLevels.length - 1) {
+      return null;
+    }
+
+    const nextLevel = cefrLevels[currentLevelIndex + 1];
+    return this.getNewWordForUser(userId, nextLevel);
+  }
+
+  private async getExistingWordForUser(userId: number): Promise<Word | null> {
+    const userWord = await this.prismaService.userWordProgress.findFirst({
+      where: {
+        userId,
+      },
+      include: {
+        word: true,
+      },
+      orderBy: {
+        mastery: 'asc',
+      },
+    });
+
+    return userWord?.word ?? null;
   }
 }
