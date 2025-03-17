@@ -16,5 +16,6 @@ import { ExerciseService } from './exercises.service';
     ExerciseService,
   ],
   imports: [PrismaModule, AuthModule, OpenAIModule, UserProgressModule],
+  exports: [TranslationCheckService],
 })
 export class ExercisesModule {}

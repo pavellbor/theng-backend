@@ -1,0 +1,235 @@
+{
+  "assessmentSentences": [
+    {
+      "englishSentence": "My name is Anna.",
+      "russianTranslation": "Меня зовут Анна.",
+      "grammarTopic": "Present Simple",
+      "word": "name",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "I have a dog.",
+      "russianTranslation": "У меня есть собака.",
+      "grammarTopic": "Present Simple (possession)",
+      "word": "have",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "I live in Moscow.",
+      "russianTranslation": "Я живу в Москве.",
+      "grammarTopic": "Present Simple",
+      "word": "live",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "She likes coffee.",
+      "russianTranslation": "Она любит кофе.",
+      "grammarTopic": "Present Simple (3rd person)",
+      "word": "like",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "It is 3 o'clock in the afternoon.",
+      "russianTranslation": "Сейчас 3 часа дня.",
+      "grammarTopic": "Present Simple (time)",
+      "word": "o'clock",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "I work in the office every day.",
+      "russianTranslation": "Я работаю в офисе каждый день.",
+      "grammarTopic": "Present Simple with frequency adverb",
+      "word": "every day",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "Yesterday I went to the cinema.",
+      "russianTranslation": "Вчера я ходил в кино.",
+      "grammarTopic": "Past Simple",
+      "word": "went",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "She is cooking dinner now.",
+      "russianTranslation": "Она сейчас готовит ужин.",
+      "grammarTopic": "Present Continuous",
+      "word": "cooking",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "I am going to learn Spanish.",
+      "russianTranslation": "Я собираюсь учить испанский язык.",
+      "grammarTopic": "Going to future",
+      "word": "going to",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "He has more books than me.",
+      "russianTranslation": "У него больше книг, чем у меня.",
+      "grammarTopic": "Comparative structures",
+      "word": "more than",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "I have lived here for five years.",
+      "russianTranslation": "Я живу здесь уже пять лет.",
+      "grammarTopic": "Present Perfect with for/since",
+      "word": "for five years",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "If it rains, we will stay at home.",
+      "russianTranslation": "Если пойдет дождь, мы останемся дома.",
+      "grammarTopic": "First Conditional",
+      "word": "if",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "He said that he would come tomorrow.",
+      "russianTranslation": "Он сказал, что придет завтра.",
+      "grammarTopic": "Reported Speech",
+      "word": "said",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "This film was directed by a famous director.",
+      "russianTranslation": "Этот фильм был снят известным режиссером.",
+      "grammarTopic": "Passive Voice",
+      "word": "was directed",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "I would like to go on vacation in summer.",
+      "russianTranslation": "Я бы хотел поехать в отпуск летом.",
+      "grammarTopic": "Would like + infinitive",
+      "word": "would like",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "By the time we arrived, the movie had already started.",
+      "russianTranslation": "К тому времени, как мы приехали, фильм уже начался.",
+      "grammarTopic": "Past Perfect",
+      "word": "had already",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "If I had known about it earlier, I would have called you.",
+      "russianTranslation": "Если бы я знал об этом раньше, я бы позвонил тебе.",
+      "grammarTopic": "Third Conditional",
+      "word": "would have",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "He offered to help us with the move.",
+      "russianTranslation": "Он предложил помочь нам с переездом.",
+      "grammarTopic": "Verb patterns (offer + to-infinitive)",
+      "word": "offered to",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "Despite the difficulties, they continued working.",
+      "russianTranslation": "Несмотря на трудности, они продолжили работу.",
+      "grammarTopic": "Despite/In spite of + noun/gerund",
+      "word": "despite",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "The painting is believed to have been created in the 18th century.",
+      "russianTranslation": "Считается, что эта картина была написана в 18 веке.",
+      "grammarTopic": "Complex passive structures",
+      "word": "is believed",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "No sooner had he finished his speech than the audience burst into applause.",
+      "russianTranslation": "Едва он закончил свою речь, как аудитория разразилась аплодисментами.",
+      "grammarTopic": "Inversion with negative adverbials",
+      "word": "no sooner",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "She insisted that we reconsider our decision.",
+      "russianTranslation": "Она настояла на том, чтобы мы пересмотрели наше решение.",
+      "grammarTopic": "Subjunctive after certain verbs",
+      "word": "insisted",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "The government ought to have foreseen the economic implications of this policy.",
+      "russianTranslation": "Правительство должно было бы предвидеть экономические последствия этой политики.",
+      "grammarTopic": "Modal perfects for past criticism",
+      "word": "ought to have",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "However convincing his arguments may be, they do not change the facts.",
+      "russianTranslation": "Сколь бы ни были убедительны его аргументы, они не меняют фактов.",
+      "grammarTopic": "Concessive clauses with 'however'",
+      "word": "however",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "It was suggested that the new measures might contribute to economic growth.",
+      "russianTranslation": "Было высказано предположение, что новые меры могли бы способствовать росту экономики.",
+      "grammarTopic": "Complex passive with reporting verbs",
+      "word": "was suggested",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "What time do you usually wake up?",
+      "russianTranslation": "В какое время ты обычно просыпаешься?",
+      "grammarTopic": "Present Simple with question words",
+      "word": "usually",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "There are five people in my family.",
+      "russianTranslation": "В моей семье пять человек.",
+      "grammarTopic": "There is/There are",
+      "word": "family",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "I don't like spicy food.",
+      "russianTranslation": "Я не люблю острую еду.",
+      "grammarTopic": "Present Simple negative",
+      "word": "spicy",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "We usually go shopping on Saturdays.",
+      "russianTranslation": "Обычно мы ходим за покупками по субботам.",
+      "grammarTopic": "Present Simple with adverbs of frequency",
+      "word": "shopping",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "She has been working here since January.",
+      "russianTranslation": "Она работает здесь с января.",
+      "grammarTopic": "Present Perfect Continuous",
+      "word": "since",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "You should take an umbrella in case it rains.",
+      "russianTranslation": "Тебе следует взять зонт на случай, если пойдет дождь.",
+      "grammarTopic": "Modal verbs of advice",
+      "word": "should",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "The report, which was published last week, contains important findings.",
+      "russianTranslation": "Отчет, который был опубликован на прошлой неделе, содержит важные выводы.",
+      "grammarTopic": "Relative clauses (non-defining)",
+      "word": "which",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "Had I known you were coming, I would have prepared dinner.",
+      "russianTranslation": "Если бы я знал, что ты придешь, я бы приготовил ужин.",
+      "grammarTopic": "Inversion in conditionals",
+      "word": "had",
+      "cefrLevel": "C1Plus"
+    }
+  ]
+}

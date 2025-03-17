@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserProgressModule } from './user-progress/user-progress.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UpdateLastActiveInterceptor } from './users/interceptors/update-last-active.interceptor';
+import { UserAssessmentModule } from './user-assessment/user-assessment.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UpdateLastActiveInterceptor } from './users/interceptors/update-last-ac
       isGlobal: true,
     }),
     UserProgressModule,
+    UserAssessmentModule,
   ],
   providers: [
     {
