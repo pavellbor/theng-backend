@@ -55,6 +55,7 @@ export class AuthService {
     try {
       const payload: JwtPayload = await this.jwtService.verifyAsync(token);
       const user = await this.userService.findOne(payload.sub);
+
       return user;
     } catch {
       throw new UnauthorizedException();
@@ -63,6 +64,7 @@ export class AuthService {
 
   private generateToken(user: User) {
     const payload: JwtPayload = { email: user.email, sub: user.id };
+
     return this.jwtService.signAsync(payload);
   }
 }

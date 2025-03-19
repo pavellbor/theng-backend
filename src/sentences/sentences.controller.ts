@@ -24,7 +24,7 @@ import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 
 @ApiTags('sentences')
 @Controller('sentences')
-@AuthUser([Role.ADMIN, Role.MODERATOR])
+@AuthUser(Role.MODERATOR)
 export class SentencesController {
   constructor(private readonly sentencesService: SentencesService) {}
 

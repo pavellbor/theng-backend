@@ -24,7 +24,7 @@ import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 
 @ApiTags('grammar-topics')
 @Controller('grammar-topics')
-@AuthUser([Role.ADMIN, Role.MODERATOR])
+@AuthUser(Role.MODERATOR)
 export class GrammarTopicsController {
   constructor(private readonly grammarTopicsService: GrammarTopicsService) {}
 

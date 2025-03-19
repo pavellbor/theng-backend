@@ -6,20 +6,15 @@ import { Role } from '@prisma/client';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 
-export const AuthUser = (roles?: Role[]) => {
+export const AuthUser = (role: Role = Role.USER) => {
   const decorators = [
     UseGuards(JwtAuthGuard),
     ApiBearerAuth(),
+    UseGuards(RolesGuard),
+    Roles(role),
+    ApiForbiddenResponse(),
     ApiUnauthorizedResponse(),
   ];
-
-  if (roles?.length) {
-    decorators.push(
-      Roles(...roles),
-      UseGuards(RolesGuard),
-      ApiForbiddenResponse(),
-    );
-  }
 
   return applyDecorators(...decorators);
 };

@@ -29,9 +29,17 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
+    const RolesWeight = {
+      [Role.ADMIN]: 3,
+      [Role.MODERATOR]: 2,
+      [Role.USER]: 1,
+    };
+
     const userRole = user.role;
 
-    if (requiredRoles.some((role) => userRole === role)) {
+    if (
+      requiredRoles.some((role) => RolesWeight[userRole] >= RolesWeight[role])
+    ) {
       return true;
     }
 

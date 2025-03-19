@@ -20,9 +20,10 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { UserRdo } from './rdo/user.rdo';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('users')
 @ApiTags('Пользователи')
@@ -38,6 +39,7 @@ export class UsersController {
   }
 
   @Post()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Создать нового пользователя' })
   @ApiCreatedResponse({ type: UserRdo })
   create(@Body() createUserDto: CreateUserDto): Promise<UserRdo> {
@@ -45,6 +47,7 @@ export class UsersController {
   }
 
   @Get()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiOkResponse({ type: [UserRdo] })
   findAll(): Promise<UserRdo[]> {
@@ -52,6 +55,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Получить пользователя по ID' })
   @ApiOkResponse({ type: UserRdo })
   @ApiNotFoundResponse({ type: NotFoundException })
@@ -60,6 +64,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Обновить пользователя по ID' })
   @ApiOkResponse({ type: UserRdo })
   update(
@@ -70,6 +75,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Удалить пользователя по ID' })
   @ApiOkResponse({ type: UserRdo })
   remove(@Param('id', ParseIntPipe) id: number): Promise<UserRdo> {
