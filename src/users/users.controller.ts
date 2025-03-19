@@ -64,7 +64,6 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Обновить пользователя по ID' })
   @ApiOkResponse({ type: UserRdo })
   update(
