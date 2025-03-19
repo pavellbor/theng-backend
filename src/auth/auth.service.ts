@@ -3,9 +3,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { RegisterAuthDto } from './dto/register-auth.dto';
+import { RegisterDto } from './dto/register.dto';
 import { UsersService } from 'src/users/users.service';
-import { LoginAuthDto } from './dto/login-auth.dto';
+import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
@@ -19,41 +19,49 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(registerAuthDto: RegisterAuthDto): Promise<AccessTokenRdo> {
-    const existingUser = await this.userService.findByEmail(
-      registerAuthDto.email,
-    );
+  async register(RegisterDto: RegisterDto): Promise<AccessTokenRdo> {
+    const existingUser = await this.userService.findByEmail(RegisterDto.email);
 
     if (existingUser) {
       throw new BadRequestException('User with this email already exists');
     }
 
-    const newUser = await this.userService.create(registerAuthDto);
-    const accessToken = await this.createToken(newUser);
+    const newUser = await this.userService.create(RegisterDto);
+    const accessToken = await this.generateToken(newUser);
 
     return new AccessTokenRdo(accessToken);
   }
 
-  async login(loginAuthDto: LoginAuthDto): Promise<AccessTokenRdo> {
-    const user = await this.userService.findByEmail(loginAuthDto.email);
+  async login(LoginDto: LoginDto): Promise<AccessTokenRdo> {
+    const user = await this.userService.findByEmail(LoginDto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const passwordMatch = await bcrypt.compare(
-      loginAuthDto.password,
+      LoginDto.password,
       user.password,
     );
     if (!passwordMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const accessToken = await this.createToken(user);
+    const accessToken = await this.generateToken(user);
 
     return new AccessTokenRdo(accessToken);
   }
 
-  private createToken(user: User) {
+  public async validateToken(token: string) {
+    try {
+      const payload: JwtPayload = await this.jwtService.verifyAsync(token);
+      const user = await this.userService.findOne(payload.sub);
+      return user;
+    } catch {
+      throw new UnauthorizedException();
+    }
+  }
+
+  private generateToken(user: User) {
     const payload: JwtPayload = { email: user.email, sub: user.id };
     return this.jwtService.signAsync(payload);
   }

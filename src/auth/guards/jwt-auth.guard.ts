@@ -5,12 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtStrategy } from '../strategies/jwt.strategy';
 import { RequestWithUser } from 'src/types/request-with-user.type';
-
+import { AuthService } from '../auth.service';
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private jwtStrategy: JwtStrategy) {}
+  constructor(private authService: AuthService) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<RequestWithUser>();
@@ -21,7 +20,7 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      const user = await this.jwtStrategy.validate(token);
+      const user = await this.authService.validateToken(token);
       request.user = user;
     } catch (error) {
       console.error(error);

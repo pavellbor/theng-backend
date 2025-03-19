@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { RegisterAuthDto } from './dto/register-auth.dto';
+import { RegisterDto } from './dto/register.dto';
 import { AuthService } from './auth.service';
-import { LoginAuthDto } from './dto/login-auth.dto';
+import { LoginDto } from './dto/login.dto';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -18,15 +18,15 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'Регистрация пользователя' })
   @ApiCreatedResponse({ type: AccessTokenRdo })
-  register(@Body() registerAuthDto: RegisterAuthDto): Promise<AccessTokenRdo> {
-    return this.authService.register(registerAuthDto);
+  register(@Body() RegisterDto: RegisterDto): Promise<AccessTokenRdo> {
+    return this.authService.register(RegisterDto);
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Вход в систему' })
   @ApiOkResponse({ type: AccessTokenRdo })
-  login(@Body() loginAuthDto: LoginAuthDto): Promise<AccessTokenRdo> {
-    return this.authService.login(loginAuthDto);
+  login(@Body() LoginDto: LoginDto): Promise<AccessTokenRdo> {
+    return this.authService.login(LoginDto);
   }
 }
