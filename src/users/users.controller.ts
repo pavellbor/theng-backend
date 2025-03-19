@@ -19,7 +19,7 @@ import {
   ApiTags,
   ApiOperation,
 } from '@nestjs/swagger';
-import { UserEntity } from './entities/user.entity';
+import { UserRdo } from './rdo/user.rdo';
 import { User } from '@prisma/client';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
@@ -32,47 +32,47 @@ export class UsersController {
 
   @Get('me')
   @ApiOperation({ summary: 'Получить информацию о текущем пользователе' })
-  @ApiOkResponse({ type: UserEntity })
-  getMe(@CurrentUser() user: User): UserEntity {
+  @ApiOkResponse({ type: UserRdo })
+  getMe(@CurrentUser() user: User): UserRdo {
     return this.usersService.getMe(user);
   }
 
   @Post()
   @ApiOperation({ summary: 'Создать нового пользователя' })
-  @ApiCreatedResponse({ type: UserEntity })
-  create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
+  @ApiCreatedResponse({ type: UserRdo })
+  create(@Body() createUserDto: CreateUserDto): Promise<UserRdo> {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Получить всех пользователей' })
-  @ApiOkResponse({ type: [UserEntity] })
-  findAll(): Promise<UserEntity[]> {
+  @ApiOkResponse({ type: [UserRdo] })
+  findAll(): Promise<UserRdo[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Получить пользователя по ID' })
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOkResponse({ type: UserRdo })
   @ApiNotFoundResponse({ type: NotFoundException })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserRdo> {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Обновить пользователя по ID' })
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOkResponse({ type: UserRdo })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateWordDto: UpdateUserDto,
-  ): Promise<UserEntity> {
+  ): Promise<UserRdo> {
     return this.usersService.update(id, updateWordDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить пользователя по ID' })
-  @ApiOkResponse({ type: UserEntity })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
+  @ApiOkResponse({ type: UserRdo })
+  remove(@Param('id', ParseIntPipe) id: number): Promise<UserRdo> {
     return this.usersService.remove(id);
   }
 }

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CEFRLevel, Role, User } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
-export class UserEntity implements User {
+export class UserRdo implements User {
   @ApiProperty()
   id: number;
 
@@ -36,7 +36,7 @@ export class UserEntity implements User {
   @ApiProperty()
   updatedAt: Date;
 
-  constructor(partial: Partial<UserEntity>) {
+  constructor(partial: Partial<UserRdo>) {
     Object.assign(this, partial);
   }
 }
