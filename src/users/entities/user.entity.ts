@@ -24,6 +24,12 @@ export class UserEntity implements User {
   lastActive: Date;
 
   @ApiProperty()
+  dailyGoal: number;
+
+  @ApiProperty()
+  streak: number;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

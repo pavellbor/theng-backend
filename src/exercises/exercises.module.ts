@@ -7,13 +7,14 @@ import { SentenceGenerationService } from './services/sentence-generation.servic
 import { TranslationCheckService } from './services/translation-check.service';
 import { UserProgressModule } from 'src/user-progress/user-progress.module';
 import { ExerciseService } from './exercises.service';
-
+import { ExerciseSessionService } from './services/exercise-session.service';
 @Module({
   controllers: [ExercisesController],
   providers: [
     SentenceGenerationService,
     TranslationCheckService,
     ExerciseService,
+    ExerciseSessionService,
   ],
   imports: [PrismaModule, AuthModule, OpenAIModule, UserProgressModule],
   exports: [TranslationCheckService],

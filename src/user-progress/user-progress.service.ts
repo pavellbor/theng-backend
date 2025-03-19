@@ -1,19 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserGrammarTopicProgressService } from './services/user-grammar-topic-progress.service';
 import { UserWordProgressService } from './services/user-word-progress.service';
-import { UserSentenceProgressService } from './services/user-sentence-progress.service';
 import { CEFRLevel } from '@prisma/client';
 import { CefrLevelUpdateService } from './services/cefr-level-update.service';
 
 interface RecordSentencePracticeResultParams {
   userId: number;
-  sentenceId: number;
   wordId: number;
   grammarTopicId: number;
-  isSentenceCorrect: boolean;
   isGrammarTopicCorrect: boolean;
   isWordCorrect: boolean;
-  lastTranslation: string;
 }
 
 @Injectable()
@@ -21,7 +17,6 @@ export class UserProgressService {
   constructor(
     private userGrammarTopicProgressService: UserGrammarTopicProgressService,
     private userWordProgressService: UserWordProgressService,
-    private userSentenceProgressService: UserSentenceProgressService,
     private cefrLevelUpdateService: CefrLevelUpdateService,
   ) {}
 
@@ -30,13 +25,10 @@ export class UserProgressService {
   ) {
     const {
       userId,
-      sentenceId,
       wordId,
       grammarTopicId,
-      isSentenceCorrect,
       isGrammarTopicCorrect,
       isWordCorrect,
-      lastTranslation,
     } = params;
 
     const userGrammarTopicProgress =
@@ -53,23 +45,12 @@ export class UserProgressService {
         isWordCorrect,
       );
 
-    const userSentenceProgress =
-      await this.userSentenceProgressService.saveUserProgress(
-        userId,
-        sentenceId,
-        isSentenceCorrect,
-        isGrammarTopicCorrect,
-        isWordCorrect,
-        lastTranslation,
-      );
-
     const newCefrLevel =
       await this.cefrLevelUpdateService.checkAndUpdateCefrLevel(userId);
 
     return {
       userGrammarTopicProgress,
       userWordProgress,
-      userSentenceProgress,
       userCefrLevelUpdated: !!newCefrLevel,
       newCefrLevel,
     };

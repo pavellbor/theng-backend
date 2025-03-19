@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -18,13 +21,22 @@ import { ExerciseService } from './exercises.service';
 export class ExercisesController {
   constructor(private exerciseService: ExerciseService) {}
 
+  @Post('start')
+  startSession(@Request() req: { user: UserEntity }) {
+    return this.exerciseService.startSession(req.user.id);
+  }
+
+  @Post('end')
+  endSession(@Request() req: { user: UserEntity }) {
+    return this.exerciseService.endSession(req.user.id);
+  }
+
   @Get('next')
-  nextExercise(@Request() req: { user: UserEntity }) {
-    return this.exerciseService.nextExercise({
-      userId: req.user.id,
-      userRole: req.user.role,
-      cefrLevel: req.user.cefrLevel,
-    });
+  getNextExercise(@Request() req: { user: UserEntity }) {
+    return this.exerciseService.getNextExercise(
+      req.user.id,
+      req.user.cefrLevel,
+    );
   }
 
   @Post('check')
@@ -35,8 +47,45 @@ export class ExercisesController {
   ) {
     return this.exerciseService.checkTranslation(
       req.user.id,
-      req.user.role,
       checkTranslationDto,
     );
+  }
+
+  @Post('skip')
+  skipExercise(
+    @Request() req: { user: UserEntity },
+    @Body() body: { exerciseId: number },
+  ) {
+    return this.exerciseService.skipExercise(req.user.id, body.exerciseId);
+  }
+
+  @Get('history')
+  getExerciseHistory(
+    @Request() req: { user: UserEntity },
+    @Query() query: { limit: number; offset: number },
+  ) {
+    return this.exerciseService.getExerciseHistory(req.user.id, {
+      limit: query.limit,
+      offset: query.offset,
+    });
+  }
+
+  @Get('sessions')
+  getSessionHistory(
+    @Request() req: { user: UserEntity },
+    @Query() query: { limit: number; offset: number },
+  ) {
+    return this.exerciseService.getSessionHistory(req.user.id, {
+      limit: query.limit,
+      offset: query.offset,
+    });
+  }
+
+  @Get('session/:id')
+  getSessionDetails(
+    @Request() req: { user: UserEntity },
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.exerciseService.getSessionDetails(req.user.id, id);
   }
 }

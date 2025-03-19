@@ -3,12 +3,12 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CheckTranslationDto {
   @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  exerciseId: number;
+
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   userTranslation: string;
-
-  @ApiProperty()
-  @IsNumber()
-  @IsNotEmpty()
-  sentenceId: number;
 }
