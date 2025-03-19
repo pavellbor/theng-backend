@@ -3,60 +3,78 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
+import { User } from '@prisma/client';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const dtoWithHashedPassword = await this.addHashedPassword(createUserDto);
+  getMe(user: User): UserEntity {
+    return new UserEntity(user);
+  }
 
-    return this.prismaService.user.create({
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const dtoWithHashedPassword = await this.addHashedPassword(createUserDto);
+    const user = await this.prismaService.user.create({
       data: dtoWithHashedPassword,
     });
+
+    return new UserEntity(user);
   }
 
-  findAll() {
-    return this.prismaService.user.findMany();
+  async findAll(): Promise<UserEntity[]> {
+    const users = await this.prismaService.user.findMany();
+    return users.map((user) => new UserEntity(user));
   }
 
-  findOne(id: number) {
-    return this.prismaService.user.findUniqueOrThrow({
+  async findOne(id: number): Promise<UserEntity> {
+    const user = await this.prismaService.user.findUniqueOrThrow({
       where: { id },
     });
+
+    return new UserEntity(user);
   }
 
-  findByEmail(email: string) {
-    return this.prismaService.user.findUnique({
+  async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.prismaService.user.findUniqueOrThrow({
       where: { email },
     });
+
+    return new UserEntity(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     const dtoWithHashedPassword = await this.addHashedPassword(updateUserDto);
 
-    return this.prismaService.user.update({
+    const user = await this.prismaService.user.update({
       where: { id },
       data: dtoWithHashedPassword,
     });
+
+    return new UserEntity(user);
   }
 
-  remove(id: number) {
-    return this.prismaService.user.delete({
+  async remove(id: number): Promise<UserEntity> {
+    const user = await this.prismaService.user.delete({
       where: { id },
     });
+
+    return new UserEntity(user);
   }
 
-  updateLastActive(id: number) {
-    return this.prismaService.user.update({
+  async updateLastActive(id: number): Promise<UserEntity> {
+    const user = await this.prismaService.user.update({
       where: { id },
       data: { lastActive: new Date() },
     });
+
+    return new UserEntity(user);
   }
 
   private async addHashedPassword<T extends CreateUserDto | UpdateUserDto>(
     dto: T,
-  ) {
+  ): Promise<T> {
     const userDtoCopy = { ...dto };
 
     if (userDtoCopy.password) {

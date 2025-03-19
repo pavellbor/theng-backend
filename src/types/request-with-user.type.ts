@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { User } from '@prisma/client';
 
 export interface RequestWithUser extends Request {
-  user: UserEntity;
+  user: User;
 }

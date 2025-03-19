@@ -20,53 +20,62 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { User } from '@prisma/client';
 
 @Controller('users')
-@ApiTags('users')
+@ApiTags('Пользователи')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  getMe(@Request() req: { user: UserEntity }) {
-    return req.user;
+  @ApiOperation({ summary: 'Получить информацию о текущем пользователе' })
+  @ApiOkResponse({ type: UserEntity })
+  getMe(@Request() req: { user: User }): UserEntity {
+    return this.usersService.getMe(req.user);
   }
 
   @Post()
+  @ApiOperation({ summary: 'Создать нового пользователя' })
   @ApiCreatedResponse({ type: UserEntity })
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiOkResponse({ type: [UserEntity] })
-  findAll() {
+  findAll(): Promise<UserEntity[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Получить пользователя по ID' })
   @ApiOkResponse({ type: UserEntity })
   @ApiNotFoundResponse({ type: NotFoundException })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Обновить пользователя по ID' })
   @ApiOkResponse({ type: UserEntity })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateWordDto: UpdateUserDto,
-  ) {
+  ): Promise<UserEntity> {
     return this.usersService.update(id, updateWordDto);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Удалить пользователя по ID' })
   @ApiOkResponse({ type: UserEntity })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
     return this.usersService.remove(id);
   }
 }

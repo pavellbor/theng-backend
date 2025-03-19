@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { PrismaModule } from './prisma/prisma.module';
 import { WordsModule } from './words/words.module';
 import { GrammarTopicsModule } from './grammar-topics/grammar-topics.module';
@@ -33,6 +33,10 @@ import { UserAssessmentModule } from './user-assessment/user-assessment.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: UpdateLastActiveInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
   ],
 })

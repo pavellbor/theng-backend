@@ -21,14 +21,26 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Theng API')
-    .setDescription('The Theng API description')
-    .setVersion('0.1')
+    .setTitle('English Learning API')
+    .setDescription('API для приложения по изучению английского языка')
+    .setVersion('1.0')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // Настройка Swagger UI
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      docExpansion: 'none', // 'list', 'full' или 'none'
+      filter: true,
+      displayRequestDuration: true,
+      syntaxHighlight: {
+        theme: 'agate', // Тема подсветки синтаксиса
+      },
+      defaultModelsExpandDepth: 1,
+    },
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }

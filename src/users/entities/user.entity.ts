@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CEFRLevel, Role, User } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 
 export class UserEntity implements User {
   @ApiProperty()
@@ -11,16 +12,16 @@ export class UserEntity implements User {
   @ApiProperty({ type: String, required: false, nullable: true })
   name: string | null;
 
-  @ApiProperty()
+  @Exclude() // Скрываем пароль из ответов API
   password: string;
 
-  @ApiProperty({ type: String, required: false, default: CEFRLevel.A1 })
+  @ApiProperty({ enum: CEFRLevel })
   cefrLevel: CEFRLevel;
 
   @ApiProperty({ enum: Role })
   role: Role;
 
-  @ApiProperty({ type: Date })
+  @ApiProperty()
   lastActive: Date;
 
   @ApiProperty()
@@ -34,4 +35,8 @@ export class UserEntity implements User {
 
   @ApiProperty()
   updatedAt: Date;
+
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
 }

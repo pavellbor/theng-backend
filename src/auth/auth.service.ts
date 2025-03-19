@@ -9,7 +9,7 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -52,7 +52,7 @@ export class AuthService {
     return { accessToken };
   }
 
-  private createToken(user: UserEntity) {
+  private createToken(user: User) {
     const payload: JwtPayload = { email: user.email, sub: user.id };
     return this.jwtService.signAsync(payload);
   }
