@@ -1,25 +1,22 @@
-import { Controller, Post, Request, UseGuards, Body } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { UserAssessmentService } from './user-assessment.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { CheckTranslationDto } from './dto/check-translation.dto';
-import { User } from '@prisma/client';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 
 @ApiTags('user-assessment')
 @Controller('user-assessment')
+@AuthUser()
 export class UserAssessmentController {
   constructor(private userAssessmentService: UserAssessmentService) {}
 
   @Post('start')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  startAssessment(@Request() req: { user: User }) {
-    return this.userAssessmentService.startAssessment(req.user.id);
+  startAssessment(@CurrentUser('id') userId: number) {
+    return this.userAssessmentService.startAssessment(userId);
   }
 
   @Post('check')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   checkTranslation(@Body() checkTranslationDto: CheckTranslationDto) {
     return this.userAssessmentService.checkTranslation(checkTranslationDto);
   }

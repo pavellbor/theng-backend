@@ -8,14 +8,11 @@ import {
   Delete,
   ParseIntPipe,
   NotFoundException,
-  Request,
-  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -23,21 +20,21 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from '@prisma/client';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 
 @Controller('users')
 @ApiTags('Пользователи')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@AuthUser()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
   @ApiOperation({ summary: 'Получить информацию о текущем пользователе' })
   @ApiOkResponse({ type: UserEntity })
-  getMe(@Request() req: { user: User }): UserEntity {
-    return this.usersService.getMe(req.user);
+  getMe(@CurrentUser() user: User): UserEntity {
+    return this.usersService.getMe(user);
   }
 
   @Post()

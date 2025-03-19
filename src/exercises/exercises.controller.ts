@@ -6,64 +6,55 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  Request,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CheckTranslationDto } from './dto/check-translation.dto';
 import { ExerciseService } from './exercises.service';
 import { User } from '@prisma/client';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 
 @Controller('exercises')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@AuthUser()
 export class ExercisesController {
   constructor(private exerciseService: ExerciseService) {}
 
   @Post('start')
-  startSession(@Request() req: { user: User }) {
-    return this.exerciseService.startSession(req.user.id);
+  startSession(@CurrentUser('id') userId: number) {
+    return this.exerciseService.startSession(userId);
   }
 
   @Post('end')
-  endSession(@Request() req: { user: User }) {
-    return this.exerciseService.endSession(req.user.id);
+  endSession(@CurrentUser('id') userId: number) {
+    return this.exerciseService.endSession(userId);
   }
 
   @Get('next')
-  getNextExercise(@Request() req: { user: User }) {
-    return this.exerciseService.getNextExercise(
-      req.user.id,
-      req.user.cefrLevel,
-    );
+  getNextExercise(@CurrentUser() user: User) {
+    return this.exerciseService.getNextExercise(user.id, user.cefrLevel);
   }
 
   @Post('check')
   checkTranslation(
-    @Request() req: { user: User },
+    @CurrentUser('id') userId: number,
     @Body() checkTranslationDto: CheckTranslationDto,
   ) {
-    return this.exerciseService.checkTranslation(
-      req.user.id,
-      checkTranslationDto,
-    );
+    return this.exerciseService.checkTranslation(userId, checkTranslationDto);
   }
 
   @Post('skip')
   skipExercise(
-    @Request() req: { user: User },
+    @CurrentUser('id') userId: number,
     @Body() body: { exerciseId: number },
   ) {
-    return this.exerciseService.skipExercise(req.user.id, body.exerciseId);
+    return this.exerciseService.skipExercise(userId, body.exerciseId);
   }
 
   @Get('history')
   getExerciseHistory(
-    @Request() req: { user: User },
+    @CurrentUser('id') userId: number,
     @Query() query: { limit: number; offset: number },
   ) {
-    return this.exerciseService.getExerciseHistory(req.user.id, {
+    return this.exerciseService.getExerciseHistory(userId, {
       limit: query.limit,
       offset: query.offset,
     });
@@ -71,10 +62,10 @@ export class ExercisesController {
 
   @Get('sessions')
   getSessionHistory(
-    @Request() req: { user: User },
+    @CurrentUser('id') userId: number,
     @Query() query: { limit: number; offset: number },
   ) {
-    return this.exerciseService.getSessionHistory(req.user.id, {
+    return this.exerciseService.getSessionHistory(userId, {
       limit: query.limit,
       offset: query.offset,
     });
@@ -82,9 +73,9 @@ export class ExercisesController {
 
   @Get('session/:id')
   getSessionDetails(
-    @Request() req: { user: User },
+    @CurrentUser('id') userId: number,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    return this.exerciseService.getSessionDetails(req.user.id, id);
+    return this.exerciseService.getSessionDetails(userId, id);
   }
 }
