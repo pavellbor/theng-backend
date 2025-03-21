@@ -53,11 +53,13 @@ export class AuthService {
 
   public async validateToken(token: string) {
     try {
+      console.log('Validating token:', token);
       const payload: JwtPayload = await this.jwtService.verifyAsync(token);
       const user = await this.userService.findOne(payload.sub);
 
       return user;
-    } catch {
+    } catch (error) {
+      console.error('Error validating token:', error);
       throw new UnauthorizedException();
     }
   }

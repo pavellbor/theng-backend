@@ -32,6 +32,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Получить информацию о текущем пользователе' })
   @ApiOkResponse({ type: UserRdo })
   getMe(@CurrentUser() user: User): UserRdo {
@@ -64,6 +65,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Обновить пользователя по ID' })
   @ApiOkResponse({ type: UserRdo })
   update(
