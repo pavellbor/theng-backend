@@ -1,44 +1,56 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateGrammarTopicDto } from './dto/create-grammar-topic.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateGrammarTopicDto } from './dto/update-grammar-topic.dto';
+import { GrammarTopicRdo } from './rdo/grammar-topic.rdo';
 
 @Injectable()
 export class GrammarTopicsService {
   constructor(private prismaService: PrismaService) {}
 
-  create(createGrammarTopicDto: CreateGrammarTopicDto) {
-    return this.prismaService.grammarTopic.create({
+  async create(
+    createGrammarTopicDto: CreateGrammarTopicDto,
+  ): Promise<GrammarTopicRdo> {
+    const grammarTopic = await this.prismaService.grammarTopic.create({
       data: createGrammarTopicDto,
     });
+
+    return new GrammarTopicRdo(grammarTopic);
   }
 
-  findAll() {
-    return this.prismaService.grammarTopic.findMany();
+  async findAll(): Promise<GrammarTopicRdo[]> {
+    const grammarTopics = await this.prismaService.grammarTopic.findMany();
+    return grammarTopics.map(
+      (grammarTopic) => new GrammarTopicRdo(grammarTopic),
+    );
   }
 
-  async findOne(id: number) {
-    const grammarTopic = await this.prismaService.grammarTopic.findUnique({
-      where: { id },
-    });
+  async findOne(id: number): Promise<GrammarTopicRdo> {
+    const grammarTopic =
+      await this.prismaService.grammarTopic.findUniqueOrThrow({
+        where: { id },
+      });
 
-    if (!grammarTopic) {
-      throw new NotFoundException();
-    }
-
-    return grammarTopic;
+    return new GrammarTopicRdo(grammarTopic);
   }
 
-  update(id: number, updateGrammarTopicDto: UpdateGrammarTopicDto) {
-    return this.prismaService.grammarTopic.update({
+  async update(
+    id: number,
+    updateGrammarTopicDto: UpdateGrammarTopicDto,
+  ): Promise<GrammarTopicRdo> {
+    const grammarTopic = await this.prismaService.grammarTopic.update({
       where: { id },
       data: updateGrammarTopicDto,
     });
+
+    return new GrammarTopicRdo(grammarTopic);
   }
 
-  remove(id: number) {
-    return this.prismaService.grammarTopic.delete({
+  async remove(id: number): Promise<GrammarTopicRdo> {
+    const grammarTopic = await this.prismaService.grammarTopic.delete({
       where: { id },
     });
+
+    return new GrammarTopicRdo(grammarTopic);
   }
 }
