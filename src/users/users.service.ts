@@ -4,72 +4,59 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { User } from '@prisma/client';
-import { UserRdo } from './rdo/user.rdo';
 
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  getMe(user: User): UserRdo {
-    return new UserRdo(user);
-  }
-
-  async create(createUserDto: CreateUserDto): Promise<UserRdo> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const dtoWithHashedPassword = await this.addHashedPassword(createUserDto);
-    const user = await this.prismaService.user.create({
+
+    return this.prismaService.user.create({
       data: dtoWithHashedPassword,
     });
-
-    return new UserRdo(user);
   }
 
-  async findAll(): Promise<UserRdo[]> {
-    const users = await this.prismaService.user.findMany();
-    return users.map((user) => new UserRdo(user));
+  async findAll(): Promise<User[]> {
+    return this.prismaService.user.findMany();
   }
 
-  async findOne(id: number): Promise<UserRdo> {
-    const user = await this.prismaService.user.findUniqueOrThrow({
+  getMe(user: User): User {
+    return user;
+  }
+
+  async findOne(id: number): Promise<User> {
+    return this.prismaService.user.findUniqueOrThrow({
       where: { id },
     });
-
-    return new UserRdo(user);
   }
 
-  async findByEmail(email: string): Promise<UserRdo | null> {
-    const user = await this.prismaService.user.findUnique({
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prismaService.user.findUnique({
       where: { email },
     });
-
-    return user ? new UserRdo(user) : null;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserRdo> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const dtoWithHashedPassword = await this.addHashedPassword(updateUserDto);
 
-    const user = await this.prismaService.user.update({
+    return this.prismaService.user.update({
       where: { id },
       data: dtoWithHashedPassword,
     });
-
-    return new UserRdo(user);
   }
 
-  async remove(id: number): Promise<UserRdo> {
-    const user = await this.prismaService.user.delete({
+  async remove(id: number): Promise<User> {
+    return this.prismaService.user.delete({
       where: { id },
     });
-
-    return new UserRdo(user);
   }
 
-  async updateLastActive(id: number): Promise<UserRdo> {
-    const user = await this.prismaService.user.update({
+  async updateLastActive(id: number): Promise<User> {
+    return this.prismaService.user.update({
       where: { id },
       data: { lastActive: new Date() },
     });
-
-    return new UserRdo(user);
   }
 
   private async addHashedPassword<T extends CreateUserDto | UpdateUserDto>(
@@ -78,8 +65,8 @@ export class UsersService {
     const userDtoCopy = { ...dto };
 
     if (userDtoCopy.password) {
-      const hashedPassword = await bcrypt.hash(userDtoCopy.password, 10);
-      userDtoCopy.password = hashedPassword;
+      const salt = await bcrypt.genSalt();
+      userDtoCopy.password = await bcrypt.hash(userDtoCopy.password, salt);
     }
 
     return userDtoCopy;

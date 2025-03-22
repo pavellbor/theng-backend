@@ -16,17 +16,19 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  @ApiOperation({ summary: 'Регистрация пользователя' })
+  @ApiOperation({ summary: 'Зарегистрировать пользователя' })
   @ApiCreatedResponse({ type: AccessTokenRdo })
-  register(@Body() RegisterDto: RegisterDto): Promise<AccessTokenRdo> {
-    return this.authService.register(RegisterDto);
+  async register(@Body() RegisterDto: RegisterDto): Promise<AccessTokenRdo> {
+    const accessToken = await this.authService.register(RegisterDto);
+    return new AccessTokenRdo(accessToken);
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Вход в систему' })
+  @ApiOperation({ summary: 'Войти в систему' })
   @ApiOkResponse({ type: AccessTokenRdo })
-  login(@Body() LoginDto: LoginDto): Promise<AccessTokenRdo> {
-    return this.authService.login(LoginDto);
+  async login(@Body() LoginDto: LoginDto): Promise<AccessTokenRdo> {
+    const accessToken = await this.authService.login(LoginDto);
+    return new AccessTokenRdo(accessToken);
   }
 }

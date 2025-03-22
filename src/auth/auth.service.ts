@@ -10,7 +10,6 @@ import * as bcrypt from 'bcryptjs';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { AccessTokenRdo } from './rdo/access-token.rdo';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(RegisterDto: RegisterDto): Promise<AccessTokenRdo> {
+  async register(RegisterDto: RegisterDto): Promise<string> {
     const existingUser = await this.userService.findByEmail(RegisterDto.email);
 
     if (existingUser) {
@@ -29,10 +28,10 @@ export class AuthService {
     const newUser = await this.userService.create(RegisterDto);
     const accessToken = await this.generateToken(newUser);
 
-    return new AccessTokenRdo(accessToken);
+    return accessToken;
   }
 
-  async login(LoginDto: LoginDto): Promise<AccessTokenRdo> {
+  async login(LoginDto: LoginDto): Promise<string> {
     const user = await this.userService.findByEmail(LoginDto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -48,7 +47,7 @@ export class AuthService {
 
     const accessToken = await this.generateToken(user);
 
-    return new AccessTokenRdo(accessToken);
+    return accessToken;
   }
 
   public async validateToken(token: string) {

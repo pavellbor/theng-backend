@@ -36,23 +36,17 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить информацию о текущем пользователе' })
   @ApiOkResponse({ type: UserRdo })
   getMe(@CurrentUser() user: User): UserRdo {
-    return this.usersService.getMe(user);
-  }
-
-  @Post()
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Создать нового пользователя' })
-  @ApiCreatedResponse({ type: UserRdo })
-  create(@Body() createUserDto: CreateUserDto): Promise<UserRdo> {
-    return this.usersService.create(createUserDto);
+    const userData = this.usersService.getMe(user);
+    return new UserRdo(userData);
   }
 
   @Get()
   @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Получить всех пользователей' })
+  @ApiOperation({ summary: 'Получить список всех пользователей' })
   @ApiOkResponse({ type: [UserRdo] })
-  findAll(): Promise<UserRdo[]> {
-    return this.usersService.findAll();
+  async findAll(): Promise<UserRdo[]> {
+    const users = await this.usersService.findAll();
+    return users.map((user) => new UserRdo(user));
   }
 
   @Get(':id')
@@ -60,26 +54,40 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить пользователя по ID' })
   @ApiOkResponse({ type: UserRdo })
   @ApiNotFoundResponse({ type: NotFoundException })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserRdo> {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserRdo> {
+    const user = await this.usersService.findOne(id);
+    return new UserRdo(user);
+  }
+
+  @Post()
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Создать нового пользователя' })
+  @ApiCreatedResponse({ type: UserRdo })
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserRdo> {
+    const user = await this.usersService.create(createUserDto);
+    return new UserRdo(user);
   }
 
   @Patch(':id')
-  @Roles(Role.USER)
-  @ApiOperation({ summary: 'Обновить пользователя по ID' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Обновить пользователя' })
   @ApiOkResponse({ type: UserRdo })
-  update(
+  @ApiNotFoundResponse({ type: NotFoundException })
+  async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateWordDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserRdo> {
-    return this.usersService.update(id, updateWordDto);
+    const user = await this.usersService.update(id, updateUserDto);
+    return new UserRdo(user);
   }
 
   @Delete(':id')
   @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Удалить пользователя по ID' })
+  @ApiOperation({ summary: 'Удалить пользователя' })
   @ApiOkResponse({ type: UserRdo })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<UserRdo> {
-    return this.usersService.remove(id);
+  @ApiNotFoundResponse({ type: NotFoundException })
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<UserRdo> {
+    const user = await this.usersService.remove(id);
+    return new UserRdo(user);
   }
 }

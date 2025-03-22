@@ -35,50 +35,63 @@ export class GrammarTopicsController {
 
   @Post()
   @Roles(Role.MODERATOR)
-  @ApiOperation({ summary: 'Создание грамматической темы' })
+  @ApiOperation({ summary: 'Создать новую грамматическую тему' })
   @ApiCreatedResponse({ type: GrammarTopicRdo })
   @ApiConflictResponse({ type: ConflictException })
   @ApiBadRequestResponse({ type: BadRequestException })
-  create(
+  async create(
     @Body() createGrammarTopicDto: CreateGrammarTopicDto,
   ): Promise<GrammarTopicRdo> {
-    return this.grammarTopicsService.create(createGrammarTopicDto);
+    const grammarTopic = await this.grammarTopicsService.create(
+      createGrammarTopicDto,
+    );
+    return new GrammarTopicRdo(grammarTopic);
   }
 
   @Get()
-  @Roles(Role.USER)
-  @ApiOperation({ summary: 'Получение всех грамматических тем' })
+  @ApiOperation({ summary: 'Получить все грамматические темы' })
   @ApiOkResponse({ type: [GrammarTopicRdo] })
-  findAll(): Promise<GrammarTopicRdo[]> {
-    return this.grammarTopicsService.findAll();
+  async findAll(): Promise<GrammarTopicRdo[]> {
+    const grammarTopics = await this.grammarTopicsService.findAll();
+    return grammarTopics.map((topic) => new GrammarTopicRdo(topic));
   }
 
   @Get(':id')
-  @Roles(Role.USER)
-  @ApiOperation({ summary: 'Получение грамматической темы по ID' })
+  @ApiOperation({ summary: 'Получить грамматическую тему по ID' })
   @ApiOkResponse({ type: GrammarTopicRdo })
   @ApiNotFoundResponse({ type: NotFoundException })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<GrammarTopicRdo> {
-    return this.grammarTopicsService.findOne(id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<GrammarTopicRdo> {
+    const grammarTopic = await this.grammarTopicsService.findOne(id);
+    return new GrammarTopicRdo(grammarTopic);
   }
 
   @Patch(':id')
   @Roles(Role.MODERATOR)
-  @ApiOperation({ summary: 'Обновление грамматической темы по ID' })
+  @ApiOperation({ summary: 'Обновить грамматическую тему' })
   @ApiOkResponse({ type: GrammarTopicRdo })
-  update(
+  @ApiNotFoundResponse({ type: NotFoundException })
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateGrammarTopicDto: UpdateGrammarTopicDto,
   ): Promise<GrammarTopicRdo> {
-    return this.grammarTopicsService.update(id, updateGrammarTopicDto);
+    const grammarTopic = await this.grammarTopicsService.update(
+      id,
+      updateGrammarTopicDto,
+    );
+    return new GrammarTopicRdo(grammarTopic);
   }
 
   @Delete(':id')
   @Roles(Role.MODERATOR)
-  @ApiOperation({ summary: 'Удаление грамматической темы по ID' })
+  @ApiOperation({ summary: 'Удалить грамматическую тему' })
   @ApiOkResponse({ type: GrammarTopicRdo })
   @ApiNotFoundResponse({ type: NotFoundException })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<GrammarTopicRdo> {
-    return this.grammarTopicsService.remove(id);
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<GrammarTopicRdo> {
+    const grammarTopic = await this.grammarTopicsService.remove(id);
+    return new GrammarTopicRdo(grammarTopic);
   }
 }
