@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ExercisesController } from './exercises.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { AuthModule } from 'src/auth/auth.module';
 import { OpenAIModule } from 'src/openai/openai.module';
 import { SentenceGenerationService } from './services/sentence-generation.service';
 import { TranslationCheckService } from './services/translation-check.service';
 import { UserProgressModule } from 'src/user-progress/user-progress.module';
 import { ExerciseService } from './exercises.service';
 import { ExerciseSessionService } from './services/exercise-session.service';
+import { LearningContentModule } from 'src/learning-content/learning-content.module';
+import { SentencesModule } from 'src/exercises/modules/sentences/sentences.module';
 @Module({
   controllers: [ExercisesController],
   providers: [
@@ -16,7 +16,12 @@ import { ExerciseSessionService } from './services/exercise-session.service';
     ExerciseService,
     ExerciseSessionService,
   ],
-  imports: [PrismaModule, AuthModule, OpenAIModule, UserProgressModule],
+  imports: [
+    OpenAIModule,
+    UserProgressModule,
+    LearningContentModule,
+    SentencesModule,
+  ],
   exports: [TranslationCheckService],
 })
 export class ExercisesModule {}

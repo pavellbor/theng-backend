@@ -1,8 +1,5 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { PrismaModule } from './prisma/prisma.module';
-import { WordsModule } from './words/words.module';
-import { GrammarTopicsModule } from './grammar-topics/grammar-topics.module';
-import { SentencesModule } from './sentences/sentences.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ExercisesModule } from './exercises/exercises.module';
@@ -12,13 +9,11 @@ import { UserProgressModule } from './user-progress/user-progress.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UpdateLastActiveInterceptor } from './users/interceptors/update-last-active.interceptor';
 import { UserAssessmentModule } from './user-assessment/user-assessment.module';
-
+import { LearningContentModule } from './learning-content/learning-content.module';
 @Module({
   imports: [
     PrismaModule,
-    WordsModule,
-    GrammarTopicsModule,
-    SentencesModule,
+    LearningContentModule,
     UsersModule,
     AuthModule,
     ExercisesModule,

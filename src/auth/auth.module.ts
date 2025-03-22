@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { forwardRef, Global, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -11,6 +11,7 @@ const jwtModule = JwtModule.register({
   signOptions: { expiresIn: '24h' },
 });
 
+@Global()
 @Module({
   imports: [forwardRef(() => UsersModule), jwtModule],
   controllers: [AuthController],
