@@ -1,23 +1,21 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
-import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { ExercisesModule } from './exercises/exercises.module';
-import { OpenAIModule } from './openai/openai.module';
+import { UsersModule } from './domains/users/users.module';
+import { AuthModule } from './domains/auth/auth.module';
+import { ExercisesModule } from './domains/exercises/exercises.module';
 import { ConfigModule } from '@nestjs/config';
-import { UserProgressModule } from './user-progress/user-progress.module';
+import { UserProgressModule } from './domains/user-progress/user-progress.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { UpdateLastActiveInterceptor } from './users/interceptors/update-last-active.interceptor';
-import { UserAssessmentModule } from './user-assessment/user-assessment.module';
-import { LearningContentModule } from './learning-content/learning-content.module';
+import { UpdateLastActiveInterceptor } from './domains/users/interceptors/update-last-active.interceptor';
+import { UserAssessmentModule } from './domains/user-assessment/user-assessment.module';
+import { LearningContentModule } from './domains/learning-content/learning-content.module';
+import { InfrastructureModule } from './infrastructure/infrastructure.module';
 @Module({
   imports: [
-    PrismaModule,
+    InfrastructureModule,
     LearningContentModule,
     UsersModule,
     AuthModule,
     ExercisesModule,
-    OpenAIModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
