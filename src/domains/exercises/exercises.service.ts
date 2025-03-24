@@ -6,7 +6,7 @@ import { SentenceGenerationService } from './services/sentence-generation.servic
 import { UserProgressService } from 'src/domains/user-progress/user-progress.service';
 import { CheckTranslationDto } from './dto/check-translation.dto';
 import { ExerciseSessionService } from './services/exercise-session.service';
-import { LearningContentService } from 'src/domains/learning-content/learning-content.service';
+import { ContentSelectionService } from 'src/domains/learning-content/modules/content-selection/content-selection.service';
 @Injectable()
 export class ExerciseService {
   constructor(
@@ -15,7 +15,7 @@ export class ExerciseService {
     private translationCheckService: TranslationCheckService,
     private userProgressService: UserProgressService,
     private exerciseSessionService: ExerciseSessionService,
-    private learningContentService: LearningContentService,
+    private contentSelectionService: ContentSelectionService,
   ) {}
 
   async startSession(userId: number) {
@@ -76,7 +76,7 @@ export class ExerciseService {
     }
 
     const { word, grammarTopic } =
-      await this.learningContentService.getContentForReview(userId, cefrLevel);
+      await this.contentSelectionService.getContentForReview(userId, cefrLevel);
 
     const generatedSentence =
       await this.sentenceGenerationService.generateSentence({

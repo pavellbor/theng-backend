@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CEFRLevel, GrammarTopic } from '@prisma/client';
 import { ContentSelectionService } from './content-selection.abstract';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { getRandomItem } from '../../../utils/get-random-item';
-import { calculateNextLevel } from '../../../utils/calculate-next-level';
+import { getRandomItem } from '../utils/get-random-item';
+import { calculateNextLevel } from '../utils/calculate-next-level';
 
 @Injectable()
 export class GrammarTopicSelectionService extends ContentSelectionService<GrammarTopic> {

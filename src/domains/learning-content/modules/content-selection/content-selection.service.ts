@@ -1,13 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { WordSelectionService } from './services/word-selection.service';
+import { GrammarTopicSelectionService } from './services/grammar-topic-selection.service';
 import { CEFRLevel } from '@prisma/client';
-import { WordSelectionService } from './modules/content-selection/services/word-selection.service';
-import { GrammarTopicSelectionService } from './modules/content-selection/services/grammar-topic-selection.service';
-
 @Injectable()
-export class LearningContentService {
+export class ContentSelectionService {
   constructor(
-    private wordSelectionService: WordSelectionService,
-    private grammarTopicSelectionService: GrammarTopicSelectionService,
+    private readonly wordSelectionService: WordSelectionService,
+    private readonly grammarTopicSelectionService: GrammarTopicSelectionService,
   ) {}
 
   async getContentForReview(userId: number, cefrLevel: CEFRLevel) {
