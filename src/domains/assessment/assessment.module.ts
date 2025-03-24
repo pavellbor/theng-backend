@@ -6,8 +6,9 @@ import { UsersModule } from 'src/domains/users/users.module';
 import { AssessmentSessionService } from './services/assessment-session.service';
 import { AssessmentContentService } from './services/assessment-content.service';
 import { LevelDeterminationService } from './services/level-determination.service';
+import { AiServicesModule } from '../ai-services/ai-services.module';
 @Module({
-  imports: [ExercisesModule, UsersModule],
+  imports: [ExercisesModule, UsersModule, AiServicesModule],
   controllers: [AssessmentController],
   providers: [
     AssessmentService,

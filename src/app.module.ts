@@ -9,6 +9,8 @@ import { UpdateLastActiveInterceptor } from './domains/users/interceptors/update
 import { AssessmentModule } from './domains/assessment/assessment.module';
 import { LearningContentModule } from './domains/learning-content/learning-content.module';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
+import { AiServicesModule } from './domains/ai-services/ai-services.module';
+
 @Module({
   imports: [
     InfrastructureModule,
@@ -21,6 +23,7 @@ import { InfrastructureModule } from './infrastructure/infrastructure.module';
     }),
     UserProgressModule,
     AssessmentModule,
+    AiServicesModule,
   ],
   providers: [
     {

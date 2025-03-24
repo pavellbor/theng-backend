@@ -52,7 +52,6 @@ export class AuthService {
 
   public async validateToken(token: string) {
     try {
-      console.log('Validating token:', token);
       const payload: JwtPayload = await this.jwtService.verifyAsync(token);
       const user = await this.userService.findOne(payload.sub);
 

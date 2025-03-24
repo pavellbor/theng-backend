@@ -1,12 +1,12 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { TranslationCheckService } from './services/translation-check.service';
 import { CEFRLevel } from '@prisma/client';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { SentenceGenerationService } from './services/sentence-generation.service';
 import { UserProgressService } from 'src/domains/user-progress/user-progress.service';
 import { CheckTranslationDto } from './dto/check-translation.dto';
 import { ExerciseSessionService } from './services/exercise-session.service';
 import { ContentSelectionService } from 'src/domains/learning-content/modules/content-selection/content-selection.service';
+import { TranslationCheckService } from '../ai-services/modules/translation-check/translation-check.service';
+import { SentenceGenerationService } from '../ai-services/modules/sentence-generation/sentence-generation.service';
 @Injectable()
 export class ExerciseService {
   constructor(

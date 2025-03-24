@@ -3,6 +3,7 @@ import { GrammarTopicsModule } from './modules/grammar-topics/grammar-topics.mod
 import { WordsModule } from './modules/words/words.module';
 import { UserProgressModule } from 'src/domains/user-progress/user-progress.module';
 import { ContentSelectionModule } from './modules/content-selection/content-selection.module';
+import { SentencesModule } from './modules/sentences/sentences.module';
 
 @Module({
   imports: [
@@ -10,7 +11,8 @@ import { ContentSelectionModule } from './modules/content-selection/content-sele
     GrammarTopicsModule,
     WordsModule,
     ContentSelectionModule,
+    SentencesModule,
   ],
-  exports: [ContentSelectionModule],
+  exports: [ContentSelectionModule, SentencesModule],
 })
 export class LearningContentModule {}

@@ -16,49 +16,58 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { SentenceEntity } from './entities/sentence.entity';
 import { Role } from '@prisma/client';
 import { AuthUser } from 'src/domains/auth/decorators/auth-user.decorator';
+import { SentenceRdo } from './rdo/sentence.rdo';
 
-@ApiTags('sentences')
+@ApiTags('Предложения')
 @Controller('sentences')
 @AuthUser(Role.MODERATOR)
 export class SentencesController {
   constructor(private readonly sentencesService: SentencesService) {}
 
   @Post()
-  @ApiCreatedResponse({ type: SentenceEntity })
-  create(@Body() createSentenceDto: CreateSentenceDto) {
+  @ApiOperation({ summary: 'Создать предложение' })
+  @ApiCreatedResponse({ type: SentenceRdo })
+  create(@Body() createSentenceDto: CreateSentenceDto): Promise<SentenceRdo> {
     return this.sentencesService.create(createSentenceDto);
   }
 
   @Get()
-  @ApiOkResponse({ type: SentenceEntity })
+  @ApiOperation({ summary: 'Получить все предложения' })
+  @ApiOkResponse({ type: SentenceRdo })
   @ApiNotFoundResponse({ type: NotFoundException })
-  findAll() {
+  findAll(): Promise<SentenceRdo[]> {
     return this.sentencesService.findAll();
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: SentenceEntity })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  @ApiOperation({ summary: 'Получить предложение по ID' })
+  @ApiOkResponse({ type: SentenceRdo })
+  @ApiNotFoundResponse({ type: NotFoundException })
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<SentenceRdo> {
     return this.sentencesService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: SentenceEntity })
+  @ApiOperation({ summary: 'Обновить предложение по ID' })
+  @ApiOkResponse({ type: SentenceRdo })
+  @ApiNotFoundResponse({ type: NotFoundException })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateSentenceDto: UpdateSentenceDto,
-  ) {
+  ): Promise<SentenceRdo> {
     return this.sentencesService.update(id, updateSentenceDto);
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: SentenceEntity })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @ApiOperation({ summary: 'Удалить предложение по ID' })
+  @ApiOkResponse({ type: SentenceRdo })
+  @ApiNotFoundResponse({ type: NotFoundException })
+  remove(@Param('id', ParseIntPipe) id: number): Promise<SentenceRdo> {
     return this.sentencesService.remove(id);
   }
 }

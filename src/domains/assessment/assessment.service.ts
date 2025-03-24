@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
-import { TranslationCheckService } from 'src/domains/exercises/services/translation-check.service';
 import { CheckTranslationDto } from './dto/check-translation.dto';
 import { AssessmentSessionService } from './services/assessment-session.service';
 import { AssessmentContentService } from './services/assessment-content.service';
@@ -11,6 +10,7 @@ import { TranslationCheck } from './interfaces/translation-check.interface';
 import { AssessmentProgress } from './interfaces/assessment-progress.interface';
 import { AssessmentStart } from './interfaces/assessment-start.interface';
 import { AssessmentSession } from './interfaces/assessment-session.interface';
+import { TranslationCheckService } from '../ai-services/modules/translation-check/translation-check.service';
 @Injectable()
 export class AssessmentService {
   private readonly MAX_SENTENCES = 10;
@@ -105,7 +105,6 @@ export class AssessmentService {
   }
 
   async finishAssessment(sessionId: string): Promise<AssessmentResult> {
-    console.log('finishAssessment', sessionId);
     const session = this.sessionService.getSession(sessionId);
     const determinedLevel = this.levelService.determineUserLevel(
       session.levelStats,
