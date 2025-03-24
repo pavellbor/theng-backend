@@ -12,7 +12,7 @@ import { AssessmentProgress } from './interfaces/assessment-progress.interface';
 import { AssessmentStart } from './interfaces/assessment-start.interface';
 import { AssessmentSession } from './interfaces/assessment-session.interface';
 @Injectable()
-export class UserAssessmentService {
+export class AssessmentService {
   private readonly MAX_SENTENCES = 10;
 
   constructor(

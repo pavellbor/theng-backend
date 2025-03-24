@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CEFRLevel } from '@prisma/client';
-import { WordSelectionService } from './services/word-selection.service';
-import { GrammarTopicSelectionService } from './services/grammar-topic-selection.service';
+import { WordSelectionService } from './modules/content-selection/services/word-selection.service';
+import { GrammarTopicSelectionService } from './modules/content-selection/services/grammar-topic-selection.service';
 
 @Injectable()
 export class LearningContentService {

@@ -3,15 +3,16 @@ import { GrammarTopicsModule } from './modules/grammar-topics/grammar-topics.mod
 import { WordsModule } from './modules/words/words.module';
 import { LearningContentService } from './learning-content.service';
 import { UserProgressModule } from 'src/domains/user-progress/user-progress.module';
-import { WordSelectionService } from './services/word-selection.service';
-import { GrammarTopicSelectionService } from './services/grammar-topic-selection.service';
+import { ContentSelectionModule } from './modules/content-selection/content-selection.module';
+
 @Module({
-  imports: [UserProgressModule, GrammarTopicsModule, WordsModule],
-  providers: [
-    LearningContentService,
-    WordSelectionService,
-    GrammarTopicSelectionService,
+  imports: [
+    UserProgressModule,
+    GrammarTopicsModule,
+    WordsModule,
+    ContentSelectionModule,
   ],
+  providers: [LearningContentService],
   exports: [LearningContentService],
 })
 export class LearningContentModule {}

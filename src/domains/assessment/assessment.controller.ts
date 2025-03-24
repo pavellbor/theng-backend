@@ -1,5 +1,5 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { UserAssessmentService } from './user-assessment.service';
+import { AssessmentService } from './assessment.service';
 import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
 import { CheckTranslationDto } from './dto/check-translation.dto';
 import { CurrentUser } from 'src/domains/auth/decorators/current-user.decorator';
@@ -8,11 +8,12 @@ import { AssessmentStartRdo } from './rdo/assessment-start.rdo';
 import { TranslationCheckRdo } from './rdo/translation-check.rdo';
 import { AssessmentResultRdo } from './rdo/assessment-result.rdo';
 import { FinishAssessmentDto } from './dto/finish-assessment.dto';
-@ApiTags('Тестирование уровня английского языка')
-@Controller('user-assessment')
+
+@ApiTags('Определение уровня')
+@Controller('assessment')
 @AuthUser()
-export class UserAssessmentController {
-  constructor(private userAssessmentService: UserAssessmentService) {}
+export class AssessmentController {
+  constructor(private assessmentService: AssessmentService) {}
 
   @Post('start')
   @ApiOperation({ summary: 'Начать тест' })
@@ -21,7 +22,7 @@ export class UserAssessmentController {
     type: AssessmentStartRdo,
   })
   startAssessment(@CurrentUser('id') userId: number): AssessmentStartRdo {
-    return this.userAssessmentService.startAssessment(userId);
+    return this.assessmentService.startAssessment(userId);
   }
 
   @Post('check')
@@ -33,7 +34,7 @@ export class UserAssessmentController {
   async checkTranslation(
     @Body() checkTranslationDto: CheckTranslationDto,
   ): Promise<TranslationCheckRdo> {
-    return this.userAssessmentService.checkTranslation(checkTranslationDto);
+    return this.assessmentService.checkTranslation(checkTranslationDto);
   }
 
   @Post('finish')
@@ -45,7 +46,7 @@ export class UserAssessmentController {
   finishAssessment(
     @Body() finishAssessmentDto: FinishAssessmentDto,
   ): Promise<AssessmentResultRdo> {
-    return this.userAssessmentService.finishAssessment(
+    return this.assessmentService.finishAssessment(
       finishAssessmentDto.sessionId,
     );
   }

@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserProgressModule } from './domains/user-progress/user-progress.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UpdateLastActiveInterceptor } from './domains/users/interceptors/update-last-active.interceptor';
-import { UserAssessmentModule } from './domains/user-assessment/user-assessment.module';
+import { AssessmentModule } from './domains/assessment/assessment.module';
 import { LearningContentModule } from './domains/learning-content/learning-content.module';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
 @Module({
@@ -20,7 +20,7 @@ import { InfrastructureModule } from './infrastructure/infrastructure.module';
       isGlobal: true,
     }),
     UserProgressModule,
-    UserAssessmentModule,
+    AssessmentModule,
   ],
   providers: [
     {
