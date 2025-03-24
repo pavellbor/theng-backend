@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-
+import { ExerciseSession } from '@prisma/client';
 @Injectable()
 export class ExerciseSessionService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async startSession(userId: number) {
+  async startSession(userId: number): Promise<ExerciseSession> {
     return this.prismaService.exerciseSession.create({
       data: {
         userId,
@@ -24,17 +24,22 @@ export class ExerciseSessionService {
   }
 
   async endSession(userId: number, sessionId: number) {
-    return this.prismaService.exerciseSession.update({
+    const session = await this.prismaService.exerciseSession.update({
       where: { id: sessionId, userId, endedAt: null },
       data: { endedAt: new Date() },
+      include: {
+        exercises: true,
+      },
     });
+
+    return this.addDurationAndAccuracy(session);
   }
 
   async recordExerciseResult(
     userId: number,
     sessionId: number,
     isCorrect: boolean,
-  ) {
+  ): Promise<ExerciseSession> {
     return this.prismaService.exerciseSession.update({
       where: { id: sessionId, userId },
       data: {
@@ -46,7 +51,7 @@ export class ExerciseSessionService {
   }
 
   async getSessionDetails(userId: number, sessionId: number) {
-    return this.prismaService.exerciseSession.findUniqueOrThrow({
+    const session = await this.prismaService.exerciseSession.findUniqueOrThrow({
       where: { id: sessionId, userId },
       include: {
         exercises: {
@@ -61,17 +66,35 @@ export class ExerciseSessionService {
         },
       },
     });
+
+    return this.addDurationAndAccuracy(session);
   }
 
-  async getSessionHistory(
-    userId: number,
-    { limit = 10, offset = 0 }: { limit: number; offset: number },
-  ) {
+  async getSessionHistory(userId: number) {
     return this.prismaService.exerciseSession.findMany({
       where: { userId },
       orderBy: { startedAt: 'desc' },
-      skip: offset,
-      take: limit,
     });
+  }
+
+  private addDurationAndAccuracy<T extends ExerciseSession>(
+    session: T,
+  ): T & { duration: number; accuracy: number } {
+    const duration = session.endedAt
+      ? Math.round(
+          (session.endedAt.getTime() - session.startedAt.getTime()) / 1000 / 60,
+        )
+      : 0;
+
+    const accuracy =
+      session.exercisesCompleted > 0
+        ? (session.correctAnswers / session.exercisesCompleted) * 100
+        : 0;
+
+    return {
+      ...session,
+      duration,
+      accuracy,
+    };
   }
 }

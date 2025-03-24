@@ -5,77 +5,66 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CheckTranslationDto } from './dto/check-translation.dto';
-import { ExerciseService } from './exercises.service';
+import { ExercisesService } from './exercises.service';
 import { User } from '@prisma/client';
 import { CurrentUser } from 'src/domains/auth/decorators/current-user.decorator';
 import { AuthUser } from 'src/domains/auth/decorators/auth-user.decorator';
-
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @Controller('exercises')
+@ApiTags('Обучение')
 @AuthUser()
 export class ExercisesController {
-  constructor(private exerciseService: ExerciseService) {}
+  constructor(private exercisesService: ExercisesService) {}
 
   @Post('start')
-  startSession(@CurrentUser('id') userId: number) {
-    return this.exerciseService.startSession(userId);
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Начать сессию' })
+  startSession(@CurrentUser() user: User) {
+    return this.exercisesService.startSession(user);
   }
 
   @Post('end')
-  endSession(@CurrentUser('id') userId: number) {
-    return this.exerciseService.endSession(userId);
-  }
-
-  @Get('next')
-  getNextExercise(@CurrentUser() user: User) {
-    return this.exerciseService.getNextExercise(user.id, user.cefrLevel);
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Завершить сессию' })
+  endSession(@CurrentUser() user: User) {
+    return this.exercisesService.endSession(user);
   }
 
   @Post('check')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Проверить перевод' })
   checkTranslation(
-    @CurrentUser('id') userId: number,
+    @CurrentUser() user: User,
     @Body() checkTranslationDto: CheckTranslationDto,
   ) {
-    return this.exerciseService.checkTranslation(userId, checkTranslationDto);
-  }
-
-  @Post('skip')
-  skipExercise(
-    @CurrentUser('id') userId: number,
-    @Body() body: { exerciseId: number },
-  ) {
-    return this.exerciseService.skipExercise(userId, body.exerciseId);
+    return this.exercisesService.checkTranslation(
+      user,
+      checkTranslationDto.userTranslation,
+    );
   }
 
   @Get('history')
-  getExerciseHistory(
-    @CurrentUser('id') userId: number,
-    @Query() query: { limit: number; offset: number },
-  ) {
-    return this.exerciseService.getExerciseHistory(userId, {
-      limit: query.limit,
-      offset: query.offset,
-    });
+  @ApiOperation({ summary: 'Получить историю упражнений' })
+  getExerciseHistory(@CurrentUser('id') userId: number) {
+    return this.exercisesService.getExerciseHistory(userId);
   }
 
   @Get('sessions')
-  getSessionHistory(
-    @CurrentUser('id') userId: number,
-    @Query() query: { limit: number; offset: number },
-  ) {
-    return this.exerciseService.getSessionHistory(userId, {
-      limit: query.limit,
-      offset: query.offset,
-    });
+  @ApiOperation({ summary: 'Получить историю сессий' })
+  getSessionHistory(@CurrentUser('id') userId: number) {
+    return this.exercisesService.getSessionHistory(userId);
   }
 
   @Get('session/:id')
+  @ApiOperation({ summary: 'Получить детали сессии' })
   getSessionDetails(
     @CurrentUser('id') userId: number,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    return this.exerciseService.getSessionDetails(userId, id);
+    return this.exercisesService.getSessionDetails(userId, id);
   }
 }

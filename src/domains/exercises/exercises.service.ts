@@ -1,324 +1,154 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { CEFRLevel } from '@prisma/client';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
+import { User } from '@prisma/client';
 import { UserProgressService } from 'src/domains/user-progress/user-progress.service';
-import { CheckTranslationDto } from './dto/check-translation.dto';
 import { ExerciseSessionService } from './services/exercise-session.service';
+import { ExerciseService } from './services/exercise.service';
 import { ContentSelectionService } from 'src/domains/learning-content/modules/content-selection/content-selection.service';
-import { TranslationCheckService } from '../ai-services/modules/translation-check/translation-check.service';
-import { SentenceGenerationService } from '../ai-services/modules/sentence-generation/sentence-generation.service';
 @Injectable()
-export class ExerciseService {
+export class ExercisesService {
   constructor(
-    private prismaService: PrismaService,
-    private sentenceGenerationService: SentenceGenerationService,
-    private translationCheckService: TranslationCheckService,
     private userProgressService: UserProgressService,
     private exerciseSessionService: ExerciseSessionService,
+    private exerciseService: ExerciseService,
     private contentSelectionService: ContentSelectionService,
   ) {}
 
-  async startSession(userId: number) {
-    const activeSession =
-      await this.exerciseSessionService.getActiveSession(userId);
+  async startSession(user: User) {
+    const activeSession = await this.exerciseSessionService.getActiveSession(
+      user.id,
+    );
 
     if (activeSession) {
-      throw new BadRequestException('Сессия упражнений уже начата');
+      const session = await this.exerciseSessionService.getSessionDetails(
+        user.id,
+        activeSession.id,
+      );
+
+      const lastExercise = session.exercises.at(-1);
+      const isSessionCompleted =
+        activeSession.exercisesCompleted >= user.dailyGoal &&
+        lastExercise?.lastTranslation;
+
+      return {
+        session: activeSession,
+        exercise: isSessionCompleted ? null : lastExercise,
+        isCompleted: isSessionCompleted,
+      };
     }
 
-    const session = await this.exerciseSessionService.startSession(userId);
+    const session = await this.exerciseSessionService.startSession(user.id);
+    const exercise = await this.getNextExercise(user, session.id);
 
     return {
-      sessionId: session.id,
-      startedAt: session.startedAt,
-      message: 'Сессия упражнений успешно начата',
+      session,
+      exercise,
+      isCompleted: false,
     };
   }
 
-  async endSession(userId: number) {
-    const activeSession =
-      await this.exerciseSessionService.getActiveSession(userId);
+  async endSession(user: User) {
+    const activeSession = await this.exerciseSessionService.getActiveSession(
+      user.id,
+    );
 
     if (!activeSession) {
       throw new BadRequestException('Сессия упражнений не найдена');
     }
 
-    const session = await this.exerciseSessionService.endSession(
-      userId,
-      activeSession.id,
+    return this.exerciseSessionService.endSession(user.id, activeSession.id);
+  }
+
+  async checkTranslation(user: User, userTranslation: string) {
+    const session = await this.exerciseSessionService.getActiveSession(user.id);
+
+    if (!session) {
+      throw new BadRequestException('Сессия упражнений не найдена');
+    }
+
+    const sessionDetails = await this.exerciseSessionService.getSessionDetails(
+      user.id,
+      session.id,
     );
 
-    const stats = {
-      sessionId: session.id,
-      duration: Math.round(
-        (session.endedAt!.getTime() - session.startedAt.getTime()) / 1000 / 60,
-      ), // продолжительность в минутах
-      exercisesCompleted: session.exercisesCompleted,
-      correctAnswers: session.correctAnswers,
-      incorrectAnswers: session.incorrectAnswers,
-      accuracy:
-        session.exercisesCompleted > 0
-          ? (session.correctAnswers / session.exercisesCompleted) * 100
-          : 0,
-    };
+    const exerciseId = sessionDetails.exercises.at(-1)?.id;
 
-    return {
-      ...stats,
-      message: 'Сессия упражнений успешно завершена',
-    };
-  }
-
-  async getNextExercise(userId: number, cefrLevel: CEFRLevel) {
-    const session = await this.exerciseSessionService.getActiveSession(userId);
-
-    if (!session) {
-      throw new BadRequestException('Сессия упражнений не найдена');
+    if (!exerciseId) {
+      throw new BadRequestException('Упражнение не найдено');
     }
 
-    const { word, grammarTopic } =
-      await this.contentSelectionService.getContentForReview(userId, cefrLevel);
-
-    const generatedSentence =
-      await this.sentenceGenerationService.generateSentence({
-        word: word.word,
-        partOfSpeech: word.partOfSpeech,
-        russianTranslation: word.russianTranslation,
-        cefrLevel: cefrLevel,
-        grammarTopic: grammarTopic.name,
-      });
-
-    const sentence = await this.prismaService.sentence.create({
-      data: {
-        englishSentence: generatedSentence.englishSentence,
-        russianTranslation: generatedSentence.russianTranslation,
-        grammarTopicId: grammarTopic.id,
-        wordId: word.id,
-        cefrLevel: cefrLevel,
-      },
-      include: {
-        grammarTopic: true,
-        word: true,
-      },
-    });
-
-    const exercise = await this.prismaService.exercise.create({
-      data: {
-        userId,
-        sentenceId: sentence.id,
-        exerciseSessionId: session.id,
-      },
-      include: {
-        sentence: {
-          include: {
-            word: true,
-            grammarTopic: true,
-          },
-        },
-      },
-    });
-
-    return exercise;
-  }
-
-  async checkTranslation(
-    userId: number,
-    checkTranslationDto: CheckTranslationDto,
-  ) {
-    const { userTranslation, exerciseId } = checkTranslationDto;
-
-    const session = await this.exerciseSessionService.getActiveSession(userId);
-
-    if (!session) {
-      throw new BadRequestException('Сессия упражнений не найдена');
-    }
-
-    const exercise = await this.prismaService.exercise.findUniqueOrThrow({
-      where: {
-        id: exerciseId,
-        userId,
-      },
-      include: {
-        sentence: {
-          include: {
-            grammarTopic: true,
-            word: true,
-          },
-        },
-      },
-    });
-
-    const checkResult = await this.translationCheckService.checkTranslation({
-      englishSentence: exercise.sentence.englishSentence,
-      russianTranslation: exercise.sentence.russianTranslation,
-      grammarTopicName: exercise.sentence.grammarTopic.name,
-      word: exercise.sentence.word.russianTranslation,
-      userTranslation: userTranslation,
-      cefrLevel: exercise.sentence.cefrLevel,
-    });
-
-    await this.prismaService.exercise.update({
-      where: { id: exerciseId },
-      data: {
-        isCorrect: checkResult.overall.isCorrect,
-        grammarCorrect: checkResult.grammarTopic.isCorrect,
-        wordCorrect: checkResult.word.isCorrect,
-        lastTranslation: userTranslation,
-      },
-    });
+    const { exercise, translationFeedback } =
+      await this.exerciseService.checkAnswer(exerciseId, userTranslation);
 
     const progressUpdate =
       await this.userProgressService.recordSentencePracticeResult({
-        userId,
+        userId: user.id,
         grammarTopicId: exercise.sentence.grammarTopicId,
         wordId: exercise.sentence.wordId,
-        isGrammarTopicCorrect: checkResult.grammarTopic.isCorrect,
-        isWordCorrect: checkResult.word.isCorrect,
+        isGrammarTopicCorrect: translationFeedback.grammarTopic.isCorrect,
+        isWordCorrect: translationFeedback.word.isCorrect,
       });
 
-    await this.exerciseSessionService.recordExerciseResult(
-      userId,
-      session.id,
-      checkResult.overall.isCorrect,
-    );
+    const isCorrect = translationFeedback.overall.isCorrect;
 
-    return {
-      result: checkResult,
-      levelUp: progressUpdate.userCefrLevelUpdated,
-      newCefrLevel: progressUpdate.newCefrLevel,
-    };
-  }
+    const updatedSession =
+      await this.exerciseSessionService.recordExerciseResult(
+        user.id,
+        session.id,
+        isCorrect,
+      );
 
-  async skipExercise(userId: number, exerciseId: number) {
-    const session = await this.exerciseSessionService.getActiveSession(userId);
-
-    if (!session) {
-      throw new BadRequestException('Сессия упражнений не найдена');
+    if (updatedSession.exercisesCompleted >= user.dailyGoal) {
+      return {
+        session: updatedSession,
+        isCorrect,
+        feedback: translationFeedback,
+        levelUp: progressUpdate.userCefrLevelUpdated,
+        newCefrLevel: progressUpdate.newCefrLevel,
+        isCompleted: true,
+        exercise: null,
+      };
     }
 
-    await this.prismaService.exercise.update({
-      where: { id: exerciseId },
-      data: {
-        isCorrect: false, // Считаем пропущенное упражнение неверным
-        lastTranslation: 'Пропущено пользователем',
-      },
-    });
-
-    await this.exerciseSessionService.recordExerciseResult(
-      userId,
-      session.id,
-      false,
-    );
+    const nextExercise = await this.getNextExercise(user, session.id);
 
     return {
-      message: 'Упражнение пропущено',
+      session: updatedSession,
+      isCorrect,
+      feedback: translationFeedback,
+      levelUp: progressUpdate.userCefrLevelUpdated,
+      newCefrLevel: progressUpdate.newCefrLevel,
+      isCompleted: false,
+      exercise: nextExercise,
     };
   }
 
-  async getExerciseHistory(
-    userId: number,
-    { limit = 20, offset = 0 }: { limit: number; offset: number },
-  ) {
-    const exercises = await this.prismaService.exercise.findMany({
-      where: { userId },
-      include: {
-        sentence: {
-          include: {
-            word: true,
-            grammarTopic: true,
-          },
-        },
-        exerciseSession: true,
-      },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      skip: offset,
-    });
-
-    return {
-      exercises,
-      total: await this.prismaService.exercise.count({
-        where: { userId },
-      }),
-    };
+  async getExerciseHistory(userId: number) {
+    return this.exerciseService.getExerciseHistory(userId);
   }
 
-  async getSessionHistory(
-    userId: number,
-    { limit = 10, offset = 0 }: { limit: number; offset: number },
-  ) {
-    const sessions = await this.exerciseSessionService.getSessionHistory(
-      userId,
-      {
-        limit,
-        offset,
-      },
-    );
-
-    const total = await this.prismaService.exerciseSession.count({
-      where: { userId },
-    });
-
-    return {
-      sessions,
-      total,
-    };
+  async getSessionHistory(userId: number) {
+    return this.exerciseSessionService.getSessionHistory(userId);
   }
 
   async getSessionDetails(userId: number, sessionId: number) {
-    const sessionDetails = await this.exerciseSessionService.getSessionDetails(
-      userId,
+    return this.exerciseSessionService.getSessionDetails(userId, sessionId);
+  }
+
+  private async getNextExercise(user: User, sessionId: number) {
+    const { word, grammarTopic } =
+      await this.contentSelectionService.getContentForReview(
+        user.id,
+        user.cefrLevel,
+      );
+
+    const exercise = await this.exerciseService.generateExercise(
       sessionId,
+      user.id,
+      user.cefrLevel,
+      word,
+      grammarTopic,
     );
 
-    // Рассчитываем дополнительную статистику
-    const duration = sessionDetails.endedAt
-      ? Math.round(
-          (sessionDetails.endedAt.getTime() -
-            sessionDetails.startedAt.getTime()) /
-            1000 /
-            60,
-        )
-      : null;
-
-    const accuracy =
-      sessionDetails.exercisesCompleted > 0
-        ? Math.round(
-            (sessionDetails.correctAnswers /
-              sessionDetails.exercisesCompleted) *
-              100,
-          )
-        : 0;
-
-    return {
-      session: {
-        id: sessionDetails.id,
-        startedAt: sessionDetails.startedAt,
-        endedAt: sessionDetails.endedAt,
-        exercisesCompleted: sessionDetails.exercisesCompleted,
-        correctAnswers: sessionDetails.correctAnswers,
-        incorrectAnswers: sessionDetails.incorrectAnswers,
-        duration,
-        accuracy,
-      },
-      exercises: sessionDetails.exercises.map((ex) => ({
-        id: ex.id,
-        englishSentence: ex.sentence.englishSentence,
-        russianTranslation: ex.sentence.russianTranslation,
-        userTranslation: ex.lastTranslation,
-        isCorrect: ex.isCorrect,
-        wordCorrect: ex.wordCorrect,
-        grammarCorrect: ex.grammarCorrect,
-        word: {
-          id: ex.sentence.word.id,
-          word: ex.sentence.word.word,
-          russianTranslation: ex.sentence.word.russianTranslation,
-        },
-        grammarTopic: {
-          id: ex.sentence.grammarTopic.id,
-          name: ex.sentence.grammarTopic.name,
-          description: ex.sentence.grammarTopic.description,
-        },
-      })),
-    };
+    return exercise;
   }
 }
