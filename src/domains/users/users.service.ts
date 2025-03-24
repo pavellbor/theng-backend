@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
-import { User } from '@prisma/client';
+import { CEFRLevel, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -56,6 +56,13 @@ export class UsersService {
     return this.prismaService.user.update({
       where: { id },
       data: { lastActive: new Date() },
+    });
+  }
+
+  async updateCefrLevel(id: number, cefrLevel: CEFRLevel): Promise<User> {
+    return this.prismaService.user.update({
+      where: { id },
+      data: { cefrLevel },
     });
   }
 

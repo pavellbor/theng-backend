@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CheckTranslationDto {
   @ApiProperty({
-    description: 'The ID of the assessment session',
+    description: 'Идентификатор сессии теста',
     example: 'assessment_123_1621234567890',
   })
   @IsNotEmpty()
@@ -11,15 +11,7 @@ export class CheckTranslationDto {
   sessionId: string;
 
   @ApiProperty({
-    description: 'The ID of the sentence to translate',
-    example: 1,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  sentenceId: number;
-
-  @ApiProperty({
-    description: "The user's translation of the sentence",
+    description: 'Перевод пользователя',
     example: 'My name is Anna.',
   })
   @IsNotEmpty()
