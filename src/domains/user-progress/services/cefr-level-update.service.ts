@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CEFRLevel } from '@prisma/client';
+import { ensureHasLevel } from 'src/domains/users/utils/ensure-has-level';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()
@@ -13,7 +14,8 @@ export class CefrLevelUpdateService {
       },
     });
 
-    const currentLevel = user.cefrLevel;
+    const userWithCefrLevel = ensureHasLevel(user);
+    const currentLevel = userWithCefrLevel.cefrLevel;
 
     if (currentLevel === CEFRLevel.C1Plus) {
       return null;

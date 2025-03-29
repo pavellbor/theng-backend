@@ -66,6 +66,16 @@ export class UsersService {
     });
   }
 
+  async setInitialLevel(
+    userId: number,
+    level: CEFRLevel = CEFRLevel.A1,
+  ): Promise<User> {
+    return this.prismaService.user.update({
+      where: { id: userId },
+      data: { cefrLevel: level },
+    });
+  }
+
   private async addHashedPassword<T extends CreateUserDto | UpdateUserDto>(
     dto: T,
   ): Promise<T> {

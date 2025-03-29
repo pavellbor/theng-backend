@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { CheckTranslationDto } from './dto/check-translation.dto';
 import { AssessmentSessionService } from './services/assessment-session.service';
@@ -11,6 +10,8 @@ import { AssessmentProgress } from './interfaces/assessment-progress.interface';
 import { AssessmentStart } from './interfaces/assessment-start.interface';
 import { AssessmentSession } from './interfaces/assessment-session.interface';
 import { TranslationCheckService } from '../ai-services/modules/translation-check/translation-check.service';
+import { CEFRLevel, User } from '@prisma/client';
+
 @Injectable()
 export class AssessmentService {
   private readonly MAX_SENTENCES = 10;
@@ -148,5 +149,10 @@ export class AssessmentService {
     });
 
     return formatted;
+  }
+
+  async skipAssessment(userId: number): Promise<User> {
+    const user = await this.usersService.updateCefrLevel(userId, CEFRLevel.A1);
+    return user;
   }
 }

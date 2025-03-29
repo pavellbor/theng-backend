@@ -8,6 +8,7 @@ import { AssessmentStartRdo } from './rdo/assessment-start.rdo';
 import { TranslationCheckRdo } from './rdo/translation-check.rdo';
 import { AssessmentResultRdo } from './rdo/assessment-result.rdo';
 import { FinishAssessmentDto } from './dto/finish-assessment.dto';
+import { UserRdo } from '../users/rdo/user.rdo';
 
 @ApiTags('Определение уровня')
 @Controller('assessment')
@@ -49,5 +50,14 @@ export class AssessmentController {
     return this.assessmentService.finishAssessment(
       finishAssessmentDto.sessionId,
     );
+  }
+
+  @Post('skip')
+  @ApiOperation({ summary: 'Пропустить тестирование и начать с уровня A1' })
+  @ApiOkResponse({ type: UserRdo })
+  @HttpCode(HttpStatus.OK)
+  @AuthUser()
+  async skipAssessment(@CurrentUser('id') userId: number): Promise<UserRdo> {
+    return this.assessmentService.skipAssessment(userId);
   }
 }

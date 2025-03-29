@@ -14,9 +14,12 @@ import { User } from '@prisma/client';
 import { CurrentUser } from 'src/domains/auth/decorators/current-user.decorator';
 import { AuthUser } from 'src/domains/auth/decorators/auth-user.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { RequireCefrLevel } from 'src/domains/users/decorators/require-cefr-level.decorator';
+
 @Controller('exercises')
 @ApiTags('Обучение')
 @AuthUser()
+@RequireCefrLevel()
 export class ExercisesController {
   constructor(private exercisesService: ExercisesService) {}
 

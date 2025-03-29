@@ -4,6 +4,7 @@ import { UserProgressService } from 'src/domains/user-progress/user-progress.ser
 import { ExerciseSessionService } from './services/exercise-session.service';
 import { ExerciseService } from './services/exercise.service';
 import { ContentSelectionService } from 'src/domains/learning-content/modules/content-selection/content-selection.service';
+import { ensureHasLevel } from '../users/utils/ensure-has-level';
 @Injectable()
 export class ExercisesService {
   constructor(
@@ -135,16 +136,21 @@ export class ExercisesService {
   }
 
   private async getNextExercise(user: User, sessionId: number) {
+    const userWithCefrLevel = ensureHasLevel(
+      user,
+      'Пользователь должен пройти тестирование перед началом упражнений',
+    );
+
     const { word, grammarTopic } =
       await this.contentSelectionService.getContentForReview(
         user.id,
-        user.cefrLevel,
+        userWithCefrLevel.cefrLevel,
       );
 
     const exercise = await this.exerciseService.generateExercise(
       sessionId,
       user.id,
-      user.cefrLevel,
+      userWithCefrLevel.cefrLevel,
       word,
       grammarTopic,
     );

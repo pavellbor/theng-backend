@@ -24,8 +24,10 @@ export class UserRdo implements User {
   @ApiProperty({
     enum: CEFRLevel,
     description: 'Уровень английского языка пользователя',
+    nullable: true,
+    required: false,
   })
-  cefrLevel: CEFRLevel;
+  cefrLevel: CEFRLevel | null;
 
   @ApiProperty({
     enum: Role,
