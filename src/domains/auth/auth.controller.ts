@@ -8,8 +8,8 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AccessTokenRdo } from './rdo/access-token.rdo';
-
+import { RegisterRdo } from './rdo/register.rdo';
+import { LoginRdo } from './rdo/login.rdo';
 @Controller('auth')
 @ApiTags('Авторизация')
 export class AuthController {
@@ -17,18 +17,16 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'Зарегистрировать пользователя' })
-  @ApiCreatedResponse({ type: AccessTokenRdo })
-  async register(@Body() RegisterDto: RegisterDto): Promise<AccessTokenRdo> {
-    const accessToken = await this.authService.register(RegisterDto);
-    return new AccessTokenRdo(accessToken);
+  @ApiCreatedResponse({ type: RegisterRdo })
+  async register(@Body() RegisterDto: RegisterDto): Promise<RegisterRdo> {
+    return await this.authService.register(RegisterDto);
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Войти в систему' })
-  @ApiOkResponse({ type: AccessTokenRdo })
-  async login(@Body() LoginDto: LoginDto): Promise<AccessTokenRdo> {
-    const accessToken = await this.authService.login(LoginDto);
-    return new AccessTokenRdo(accessToken);
+  @ApiOkResponse({ type: LoginRdo })
+  async login(@Body() LoginDto: LoginDto): Promise<LoginRdo> {
+    return await this.authService.login(LoginDto);
   }
 }
