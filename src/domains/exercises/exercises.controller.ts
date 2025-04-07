@@ -18,8 +18,8 @@ import { RequireCefrLevel } from 'src/domains/users/decorators/require-cefr-leve
 
 @Controller('exercises')
 @ApiTags('Обучение')
-@AuthUser()
 @RequireCefrLevel()
+@AuthUser()
 export class ExercisesController {
   constructor(private exercisesService: ExercisesService) {}
 
