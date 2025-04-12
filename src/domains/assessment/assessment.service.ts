@@ -10,7 +10,7 @@ import { AssessmentProgress } from './interfaces/assessment-progress.interface';
 import { AssessmentStart } from './interfaces/assessment-start.interface';
 import { AssessmentSession } from './interfaces/assessment-session.interface';
 import { TranslationCheckService } from '../ai-services/modules/translation-check/translation-check.service';
-import { CEFRLevel, User } from '@prisma/client';
+import { CEFRLevel } from '@prisma/client';
 
 @Injectable()
 export class AssessmentService {
@@ -154,8 +154,7 @@ export class AssessmentService {
     return formatted;
   }
 
-  async skipAssessment(userId: number): Promise<User> {
-    const user = await this.usersService.updateCefrLevel(userId, CEFRLevel.A1);
-    return user;
+  async skipAssessment(userId: number) {
+    await this.usersService.updateCefrLevel(userId, CEFRLevel.A1);
   }
 }

@@ -230,6 +230,356 @@
       "grammarTopic": "Inversion in conditionals",
       "word": "had",
       "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "Do you speak English?",
+      "russianTranslation": "Ты говоришь по-английски?",
+      "grammarTopic": "Present Simple questions",
+      "word": "speak",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "She is from Russia.",
+      "russianTranslation": "Она из России.",
+      "grammarTopic": "Present Simple with be",
+      "word": "from",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "This is my brother.",
+      "russianTranslation": "Это мой брат.",
+      "grammarTopic": "Present Simple with demonstratives",
+      "word": "brother",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "They are students.",
+      "russianTranslation": "Они студенты.",
+      "grammarTopic": "Present Simple with be",
+      "word": "students",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "Where is the bathroom?",
+      "russianTranslation": "Где находится ванная комната?",
+      "grammarTopic": "Wh-questions",
+      "word": "where",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "I want a cup of tea.",
+      "russianTranslation": "Я хочу чашку чая.",
+      "grammarTopic": "Present Simple for desires",
+      "word": "want",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "She has long hair.",
+      "russianTranslation": "У нее длинные волосы.",
+      "grammarTopic": "Present Simple for descriptions",
+      "word": "hair",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "We eat breakfast at 8 o'clock.",
+      "russianTranslation": "Мы завтракаем в 8 часов.",
+      "grammarTopic": "Daily routines",
+      "word": "breakfast",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "Can you help me, please?",
+      "russianTranslation": "Можешь мне помочь, пожалуйста?",
+      "grammarTopic": "Modal verbs - ability/request",
+      "word": "can",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "How old are you?",
+      "russianTranslation": "Сколько тебе лет?",
+      "grammarTopic": "Personal information questions",
+      "word": "old",
+      "cefrLevel": "A1"
+    },
+    {
+      "englishSentence": "I was at the party last night.",
+      "russianTranslation": "Я был на вечеринке вчера вечером.",
+      "grammarTopic": "Past Simple with be",
+      "word": "was",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "She didn't come to work yesterday.",
+      "russianTranslation": "Она не пришла на работу вчера.",
+      "grammarTopic": "Past Simple negative",
+      "word": "didn't",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "Are you watching this movie?",
+      "russianTranslation": "Ты смотришь этот фильм?",
+      "grammarTopic": "Present Continuous questions",
+      "word": "watching",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "He's taller than his brother.",
+      "russianTranslation": "Он выше своего брата.",
+      "grammarTopic": "Comparative adjectives",
+      "word": "taller",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "We are going to visit our grandparents next weekend.",
+      "russianTranslation": "Мы собираемся навестить бабушку и дедушку в следующие выходные.",
+      "grammarTopic": "Going to for future plans",
+      "word": "next weekend",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "I sometimes read books before bedtime.",
+      "russianTranslation": "Я иногда читаю книги перед сном.",
+      "grammarTopic": "Adverbs of frequency",
+      "word": "sometimes",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "Did you enjoy the concert?",
+      "russianTranslation": "Тебе понравился концерт?",
+      "grammarTopic": "Past Simple questions",
+      "word": "enjoy",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "She was playing piano when I called.",
+      "russianTranslation": "Она играла на пианино, когда я позвонил.",
+      "grammarTopic": "Past Continuous",
+      "word": "was playing",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "This is the best restaurant in town.",
+      "russianTranslation": "Это лучший ресторан в городе.",
+      "grammarTopic": "Superlative adjectives",
+      "word": "best",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "I'm too tired to go out tonight.",
+      "russianTranslation": "Я слишком устал, чтобы выйти сегодня вечером.",
+      "grammarTopic": "Too and enough structures",
+      "word": "too tired",
+      "cefrLevel": "A2"
+    },
+    {
+      "englishSentence": "I've never been to Paris before.",
+      "russianTranslation": "Я никогда раньше не был в Париже.",
+      "grammarTopic": "Present Perfect with adverbs",
+      "word": "never been",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "When I arrived, she had already left.",
+      "russianTranslation": "Когда я пришел, она уже ушла.",
+      "grammarTopic": "Past Perfect",
+      "word": "had already",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "She suggested going to the beach.",
+      "russianTranslation": "Она предложила пойти на пляж.",
+      "grammarTopic": "Verbs followed by gerunds",
+      "word": "suggested",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "We'll be late unless we leave now.",
+      "russianTranslation": "Мы опоздаем, если не уйдем сейчас.",
+      "grammarTopic": "First Conditional variants",
+      "word": "unless",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "I wish I could speak Chinese.",
+      "russianTranslation": "Жаль, что я не могу говорить по-китайски.",
+      "grammarTopic": "Wish + past forms",
+      "word": "wish",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "The project must be completed by Friday.",
+      "russianTranslation": "Проект должен быть завершен к пятнице.",
+      "grammarTopic": "Modal passive",
+      "word": "must be completed",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "She asked me not to tell anyone about it.",
+      "russianTranslation": "Она попросила меня никому об этом не рассказывать.",
+      "grammarTopic": "Reported requests",
+      "word": "asked",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "I'm used to getting up early.",
+      "russianTranslation": "Я привык вставать рано.",
+      "grammarTopic": "Be used to + gerund",
+      "word": "used to",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "We might go to the concert if we can get tickets.",
+      "russianTranslation": "Мы, возможно, пойдем на концерт, если сможем достать билеты.",
+      "grammarTopic": "Modal verbs of possibility",
+      "word": "might",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "I've been studying English for three years.",
+      "russianTranslation": "Я изучаю английский уже три года.",
+      "grammarTopic": "Present Perfect Continuous with time expressions",
+      "word": "been studying",
+      "cefrLevel": "B1"
+    },
+    {
+      "englishSentence": "Not only did she win the competition, but she also set a new record.",
+      "russianTranslation": "Она не только выиграла соревнование, но и установила новый рекорд.",
+      "grammarTopic": "Inverted word order for emphasis",
+      "word": "not only",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "The play, which was written by a local author, received excellent reviews.",
+      "russianTranslation": "Пьеса, которая была написана местным автором, получила отличные отзывы.",
+      "grammarTopic": "Non-defining relative clauses",
+      "word": "which",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "She claims to have met the president personally.",
+      "russianTranslation": "Она утверждает, что лично встречалась с президентом.",
+      "grammarTopic": "Infinitive after certain verbs",
+      "word": "claims",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "Should you need any assistance, please do not hesitate to contact us.",
+      "russianTranslation": "Если вам понадобится помощь, пожалуйста, не стесняйтесь обращаться к нам.",
+      "grammarTopic": "Conditional inversion",
+      "word": "should you",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "We were given the opportunity to present our research.",
+      "russianTranslation": "Нам предоставили возможность представить наше исследование.",
+      "grammarTopic": "Complex passive structures",
+      "word": "were given",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "Having finished the project, they celebrated their success.",
+      "russianTranslation": "Завершив проект, они отпраздновали свой успех.",
+      "grammarTopic": "Perfect participle clauses",
+      "word": "having finished",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "It's high time we made a decision.",
+      "russianTranslation": "Давно пора нам принять решение.",
+      "grammarTopic": "Subjunctive after time expressions",
+      "word": "high time",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "I'd rather you didn't tell him about our conversation.",
+      "russianTranslation": "Я бы предпочел, чтобы ты не рассказывал ему о нашем разговоре.",
+      "grammarTopic": "Would rather + past subjunctive",
+      "word": "rather",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "The book, whose author won the Nobel Prize, has been translated into 30 languages.",
+      "russianTranslation": "Книга, автор которой получил Нобелевскую премию, была переведена на 30 языков.",
+      "grammarTopic": "Possessive relative pronouns",
+      "word": "whose",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "He regrets not having studied harder at school.",
+      "russianTranslation": "Он сожалеет, что не учился усерднее в школе.",
+      "grammarTopic": "Verb patterns with perfect forms",
+      "word": "regrets",
+      "cefrLevel": "B2"
+    },
+    {
+      "englishSentence": "Were it not for his help, we would never have succeeded.",
+      "russianTranslation": "Если бы не его помощь, мы бы никогда не добились успеха.",
+      "grammarTopic": "Inverted conditionals",
+      "word": "were it not",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "Seldom have I seen such a magnificent performance.",
+      "russianTranslation": "Редко я видел такое великолепное выступление.",
+      "grammarTopic": "Inversion with negative adverbials",
+      "word": "seldom",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "She is thought to have been living abroad for the past decade.",
+      "russianTranslation": "Считается, что она живет за границей последние десять лет.",
+      "grammarTopic": "Advanced passive reporting structures",
+      "word": "is thought",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "Not until the final paragraph does the author reveal the true meaning.",
+      "russianTranslation": "Только в последнем абзаце автор раскрывает истинный смысл.",
+      "grammarTopic": "Inversion for emphasis",
+      "word": "not until",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "Little did they know what consequences their actions would have.",
+      "russianTranslation": "Мало ведали они, какие последствия будут иметь их действия.",
+      "grammarTopic": "Emphatic inversions",
+      "word": "little did",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "The director, along with the cast members, is reviewing the script.",
+      "russianTranslation": "Режиссер вместе с актерами просматривает сценарий.",
+      "grammarTopic": "Advanced subject-verb agreement",
+      "word": "along with",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "Had he been more careful, the accident might not have happened.",
+      "russianTranslation": "Если бы он был более осторожен, аварии могло бы не произойти.",
+      "grammarTopic": "Mixed conditionals",
+      "word": "had been",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "So profound was her insight that it changed the entire field of research.",
+      "russianTranslation": "Настолько глубоким было ее понимание, что оно изменило всю область исследований.",
+      "grammarTopic": "Inversion after 'so'",
+      "word": "so profound",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "The committee recommended that he be appointed to the position immediately.",
+      "russianTranslation": "Комитет рекомендовал, чтобы его немедленно назначили на эту должность.",
+      "grammarTopic": "Formal subjunctive in that-clauses",
+      "word": "be appointed",
+      "cefrLevel": "C1Plus"
+    },
+    {
+      "englishSentence": "Under no circumstances is the information to be disclosed to third parties.",
+      "russianTranslation": "Ни при каких обстоятельствах информация не должна раскрываться третьим лицам.",
+      "grammarTopic": "Formal negative adverbial expressions",
+      "word": "under no circumstances",
+      "cefrLevel": "C1Plus"
     }
   ]
 }

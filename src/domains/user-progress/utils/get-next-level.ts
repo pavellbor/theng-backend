@@ -2,6 +2,7 @@ import { CEFRLevel } from '@prisma/client';
 
 export const getNextLevel = (currentLevel: CEFRLevel): CEFRLevel | null => {
   const levels = [
+    CEFRLevel.A0,
     CEFRLevel.A1,
     CEFRLevel.A2,
     CEFRLevel.B1,

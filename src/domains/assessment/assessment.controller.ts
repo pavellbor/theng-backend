@@ -55,9 +55,9 @@ export class AssessmentController {
   @Post('skip')
   @ApiOperation({ summary: 'Пропустить тестирование и начать с уровня A1' })
   @ApiOkResponse({ type: UserRdo })
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @AuthUser()
-  async skipAssessment(@CurrentUser('id') userId: number): Promise<UserRdo> {
+  async skipAssessment(@CurrentUser('id') userId: number) {
     return this.assessmentService.skipAssessment(userId);
   }
 }

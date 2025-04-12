@@ -64,7 +64,7 @@ export class LevelDeterminationService {
         attempts >= this.MIN_ATTEMPTS_FOR_DECISION &&
         successRate >= this.SUCCESS_THRESHOLD
       ) {
-        return levels[i + 1] ?? level;
+        return level;
       }
     }
 

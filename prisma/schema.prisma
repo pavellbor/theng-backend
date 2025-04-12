@@ -24,7 +24,6 @@ model User {
   role                     Role                       @default(USER)
   lastActive               DateTime                   @default(now())
   dailyGoal                Int                        @default(10)
-  streak                   Int                        @default(0)
   userWordProgress         UserWordProgress[]
   userGrammarTopicProgress UserGrammarTopicProgress[]
   exerciseSession          ExerciseSession[]
@@ -170,6 +169,7 @@ enum PartOfSpeech {
 }
 
 enum CEFRLevel {
+  A0
   A1
   A2
   B1

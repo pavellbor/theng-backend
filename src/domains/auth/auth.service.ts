@@ -10,8 +10,6 @@ import * as bcrypt from 'bcryptjs';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { RegisterRdo } from './rdo/register.rdo';
-import { LoginRdo } from './rdo/login.rdo';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(RegisterDto: RegisterDto): Promise<RegisterRdo> {
+  async register(RegisterDto: RegisterDto) {
     const existingUser = await this.userService.findByEmail(RegisterDto.email);
 
     if (existingUser) {
@@ -35,7 +33,7 @@ export class AuthService {
     return { user: newUser, token: accessToken };
   }
 
-  async login(LoginDto: LoginDto): Promise<LoginRdo> {
+  async login(LoginDto: LoginDto) {
     const user = await this.userService.findByEmail(LoginDto.email);
     if (!user) {
       throw new UnauthorizedException('Неверный email или пароль');
