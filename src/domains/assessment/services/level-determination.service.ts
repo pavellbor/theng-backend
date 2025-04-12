@@ -68,6 +68,6 @@ export class LevelDeterminationService {
       }
     }
 
-    return CEFRLevel.A1;
+    return CEFRLevel.A0;
   }
 }
