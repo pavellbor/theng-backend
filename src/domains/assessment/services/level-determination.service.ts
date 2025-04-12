@@ -5,40 +5,44 @@ import { AssessmentSession } from '../interfaces/assessment-session.interface';
 export class LevelDeterminationService {
   private readonly SUCCESS_THRESHOLD = 0.75;
   private readonly MIN_ATTEMPTS_FOR_DECISION = 2;
-  private readonly LEVEL_UP_THRESHOLD = 0.75;
-  private readonly LEVEL_DOWN_THRESHOLD = 0.4;
+  private readonly CONFIDENCE_THRESHOLD = 2;
 
   determineNextLevel(
     session: AssessmentSession,
     isCorrect: boolean,
-  ): CEFRLevel {
-    const currentLevel = session.currentLevel;
-    const levelStats = session.levelStats[currentLevel];
-
-    const totalAttempts = levelStats.attempts + 1;
-    const totalCorrect = levelStats.correct + (isCorrect ? 1 : 0);
-
-    const successRate = totalCorrect / totalAttempts;
+  ): {
+    level: CEFRLevel;
+    confidence: number;
+  } {
+    const confidence = Math.min(
+      Math.max(
+        session.confidenceScore + (isCorrect ? 1 : -1),
+        -this.CONFIDENCE_THRESHOLD,
+      ),
+      this.CONFIDENCE_THRESHOLD,
+    );
 
     const levels = Object.values(CEFRLevel);
     const currentIndex = levels.indexOf(session.currentLevel);
 
-    if (totalAttempts < this.MIN_ATTEMPTS_FOR_DECISION) {
-      return currentLevel;
-    }
-
     if (
-      successRate >= this.LEVEL_UP_THRESHOLD &&
+      confidence >= this.CONFIDENCE_THRESHOLD &&
       currentIndex < levels.length - 1
     ) {
-      return levels[currentIndex + 1];
+      return {
+        level: levels[currentIndex + 1],
+        confidence: 0,
+      };
     }
 
-    if (successRate <= this.LEVEL_DOWN_THRESHOLD && currentIndex > 0) {
-      return levels[currentIndex - 1];
+    if (confidence <= -this.CONFIDENCE_THRESHOLD && currentIndex > 0) {
+      return {
+        level: levels[currentIndex - 1],
+        confidence: 0,
+      };
     }
 
-    return currentLevel;
+    return { level: session.currentLevel, confidence };
   }
 
   determineUserLevel(levelStats: AssessmentSession['levelStats']): CEFRLevel {
@@ -60,7 +64,7 @@ export class LevelDeterminationService {
         attempts >= this.MIN_ATTEMPTS_FOR_DECISION &&
         successRate >= this.SUCCESS_THRESHOLD
       ) {
-        return level;
+        return levels[i + 1] ?? level;
       }
     }
 

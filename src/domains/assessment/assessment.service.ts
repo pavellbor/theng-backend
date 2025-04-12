@@ -80,21 +80,24 @@ export class AssessmentService {
       };
     }
 
-    const nextLevel = this.levelService.determineNextLevel(
+    const { level, confidence } = this.levelService.determineNextLevel(
       updatedSession,
       isCorrect,
     );
 
+    const updatedSession1 = this.sessionService.setConfidenceScore(
+      sessionId,
+      confidence,
+    );
+
+    console.log(updatedSession1);
+
     const nextSentence = this.contentService.getNextSentence(
-      nextLevel,
+      level,
       updatedSession.usedSentencesIds,
     );
 
-    this.sessionService.setCurrentSentenceId(
-      sessionId,
-      nextSentence.id,
-      nextLevel,
-    );
+    this.sessionService.setCurrentSentenceId(sessionId, nextSentence.id, level);
 
     return {
       isCorrect,

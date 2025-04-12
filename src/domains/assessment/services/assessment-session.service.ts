@@ -26,6 +26,7 @@ export class AssessmentSessionService {
       currentLevel: CEFRLevel.A1,
       usedSentencesIds: [],
       isCompleted: false,
+      confidenceScore: 0,
     };
 
     this.activeSessions.set(sessionId, session);
@@ -41,6 +42,17 @@ export class AssessmentSessionService {
     }
 
     return session;
+  }
+
+  setConfidenceScore(
+    sessionId: string,
+    confidenceScore: number,
+  ): AssessmentSession {
+    this.getSession(sessionId);
+
+    return this.updateSession(sessionId, {
+      confidenceScore,
+    });
   }
 
   setIsCompleted(sessionId: string): AssessmentSession {

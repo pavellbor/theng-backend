@@ -10,4 +10,5 @@ export interface AssessmentSession {
   currentLevel: CEFRLevel;
   usedSentencesIds: number[];
   isCompleted: boolean;
+  confidenceScore: number;
 }
