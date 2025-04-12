@@ -110,15 +110,17 @@ export class AssessmentService {
 
   async finishAssessment(sessionId: string): Promise<AssessmentResult> {
     const session = this.sessionService.getSession(sessionId);
-    const determinedLevel = this.levelService.determineUserLevel(
+    const proficiencyLevel = this.levelService.determineProficiencyLevel(
       session.levelStats,
     );
+    const learningLevel =
+      this.levelService.determineLearningLevel(proficiencyLevel);
 
-    await this.usersService.updateCefrLevel(session.userId, determinedLevel);
+    await this.usersService.updateCefrLevel(session.userId, learningLevel);
     this.sessionService.deleteSession(sessionId);
 
     return {
-      determinedLevel,
+      determinedLevel: proficiencyLevel,
       completedSentences: session.completedSentences,
       levelStats: this.formatLevelStats(session.levelStats),
     };

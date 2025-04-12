@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CEFRLevel } from '@prisma/client';
 import { AssessmentSession } from '../interfaces/assessment-session.interface';
+import { getNextLevel } from 'src/domains/user-progress/utils/get-next-level';
+
 @Injectable()
 export class LevelDeterminationService {
   private readonly SUCCESS_THRESHOLD = 0.75;
@@ -45,7 +47,9 @@ export class LevelDeterminationService {
     return { level: session.currentLevel, confidence };
   }
 
-  determineUserLevel(levelStats: AssessmentSession['levelStats']): CEFRLevel {
+  determineProficiencyLevel(
+    levelStats: AssessmentSession['levelStats'],
+  ): CEFRLevel {
     const levelScores = {} as Record<CEFRLevel, number>;
 
     Object.entries(levelStats).forEach(([level, { attempts, correct }]) => {
@@ -69,5 +73,9 @@ export class LevelDeterminationService {
     }
 
     return CEFRLevel.A0;
+  }
+
+  determineLearningLevel(proficiencyLevel: CEFRLevel): CEFRLevel {
+    return getNextLevel(proficiencyLevel) ?? proficiencyLevel;
   }
 }
