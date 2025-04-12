@@ -81,7 +81,7 @@ export class AssessmentService {
     }
 
     const nextLevel = this.levelService.determineNextLevel(
-      updatedSession.currentLevel,
+      updatedSession,
       isCorrect,
     );
 
