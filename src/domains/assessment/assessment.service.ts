@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CheckTranslationDto } from './dto/check-translation.dto';
+import { AssessmentCheckTranslationDto } from './dto/assessment-check-translation.dto';
 import { AssessmentSessionService } from './services/assessment-session.service';
 import { AssessmentContentService } from './services/assessment-content.service';
 import { LevelDeterminationService } from './services/level-determination.service';
@@ -49,7 +49,7 @@ export class AssessmentService {
   async checkTranslation({
     sessionId,
     userTranslation,
-  }: CheckTranslationDto): Promise<TranslationCheck> {
+  }: AssessmentCheckTranslationDto): Promise<TranslationCheck> {
     const session = this.sessionService.getSession(sessionId);
 
     const sentence = this.contentService.getSentenceById(

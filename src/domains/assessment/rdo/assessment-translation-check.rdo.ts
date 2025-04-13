@@ -3,7 +3,7 @@ import { AssessmentSentenceRdo } from './assessment-sentence.rdo';
 import { AssessmentProgressRdo } from './assessment-progress.rdo';
 import { TranslationCheck } from '../interfaces/translation-check.interface';
 
-class TranslationFeedbackRdo {
+class AssessmentTranslationFeedbackRdo {
   @ApiProperty({
     description: 'Правильность перевода',
     example: { isCorrect: true, feedback: 'Правильно' },
@@ -23,7 +23,7 @@ class TranslationFeedbackRdo {
   grammarTopic: { isCorrect: boolean; feedback: string };
 }
 
-export class TranslationCheckRdo implements TranslationCheck {
+export class AssessmentTranslationCheckRdo implements TranslationCheck {
   @ApiProperty({
     description: 'Правильность перевода',
     example: true,
@@ -32,9 +32,9 @@ export class TranslationCheckRdo implements TranslationCheck {
 
   @ApiProperty({
     description: 'Отзыв о переводе',
-    type: TranslationFeedbackRdo,
+    type: AssessmentTranslationFeedbackRdo,
   })
-  feedback: TranslationFeedbackRdo;
+  feedback: AssessmentTranslationFeedbackRdo;
 
   @ApiProperty({
     description: 'Прогресс тестирования',

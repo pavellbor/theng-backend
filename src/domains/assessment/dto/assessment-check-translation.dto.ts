@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CheckTranslationDto {
+export class AssessmentCheckTranslationDto {
   @ApiProperty({
     description: 'Идентификатор сессии теста',
     example: 'assessment_123_1621234567890',

@@ -8,7 +8,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { CheckTranslationDto } from './dto/check-translation.dto';
+import { ExercisesCheckTranslationDto } from './dto/exercises-check-translation.dto';
 import { ExercisesService } from './exercises.service';
 import { User } from '@prisma/client';
 import { CurrentUser } from 'src/domains/auth/decorators/current-user.decorator';
@@ -42,7 +42,7 @@ export class ExercisesController {
   @ApiOperation({ summary: 'Проверить перевод' })
   checkTranslation(
     @CurrentUser() user: User,
-    @Body() checkTranslationDto: CheckTranslationDto,
+    @Body() checkTranslationDto: ExercisesCheckTranslationDto,
   ) {
     return this.exercisesService.checkTranslation(
       user,
