@@ -19,8 +19,7 @@ export class UserStatsService {
   }
 
   private async getUserProgressStats(user: User) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = dayjs().startOf('day').toDate();
 
     const userId = user.id;
 
@@ -41,6 +40,27 @@ export class UserStatsService {
         },
       },
     });
+
+    const wordsInProgress = await this.prismaService.userWordProgress.count({
+      where: {
+        userId,
+        mastery: {
+          gt: 0,
+          lt: 0.8,
+        },
+      },
+    });
+
+    const grammarTopicsInProgress =
+      await this.prismaService.userGrammarTopicProgress.count({
+        where: {
+          userId,
+          mastery: {
+            gt: 0,
+            lt: 0.8,
+          },
+        },
+      });
 
     const grammarTopicsMastered =
       await this.prismaService.userGrammarTopicProgress.count({
@@ -75,11 +95,13 @@ export class UserStatsService {
         mastered: wordsMastered,
         total: totalWords,
         percentage: getPercentage(totalWords, wordsMastered),
+        inProgress: wordsInProgress,
       },
       grammarTopics: {
         mastered: grammarTopicsMastered,
         total: totalGrammarTopics,
         percentage: getPercentage(totalGrammarTopics, grammarTopicsMastered),
+        inProgress: grammarTopicsInProgress,
       },
       levelProgress: {
         currentLevel: user.cefrLevel,
