@@ -117,18 +117,20 @@ model UserGrammarTopicProgress {
 }
 
 model Exercise {
-  id                Int             @id @default(autoincrement())
-  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int
-  sentence          Sentence        @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
-  sentenceId        Int
-  exerciseSession   ExerciseSession @relation(fields: [exerciseSessionId], references: [id], onDelete: Cascade)
-  exerciseSessionId Int
-  createdAt         DateTime        @default(now())
-  isCorrect         Boolean         @default(false)
-  lastTranslation   String?
-  wordCorrect       Boolean         @default(false)
-  grammarCorrect    Boolean         @default(false)
+  id                  Int             @id @default(autoincrement())
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              Int
+  sentence            Sentence        @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
+  sentenceId          Int
+  exerciseSession     ExerciseSession @relation(fields: [exerciseSessionId], references: [id], onDelete: Cascade)
+  exerciseSessionId   Int
+  createdAt           DateTime        @default(now())
+  isCorrect           Boolean         @default(false)
+  lastTranslation     String?
+  wordCorrect         Boolean         @default(false)
+  grammarCorrect      Boolean         @default(false)
+  isWordRepetition    Boolean         @default(false)
+  isGrammarRepetition Boolean         @default(false)
 
   @@unique([userId, sentenceId, exerciseSessionId])
   @@index([userId, isCorrect])

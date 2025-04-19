@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CEFRLevel, Exercise, GrammarTopic, Word } from '@prisma/client';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { ContentSelectionService } from 'src/domains/learning-content/modules/content-selection/content-selection.service';
 import { SentencesService } from 'src/domains/learning-content/modules/sentences/sentences.service';
 import { SentenceGenerationService } from 'src/domains/ai-services/modules/sentence-generation/sentence-generation.service';
 import { TranslationCheckService } from 'src/domains/ai-services/modules/translation-check/translation-check.service';
@@ -10,7 +9,6 @@ import { TranslationCheckService } from 'src/domains/ai-services/modules/transla
 export class ExerciseService {
   constructor(
     private prismaService: PrismaService,
-    private contentSelectionService: ContentSelectionService,
     private sentenceGenerationService: SentenceGenerationService,
     private sentencesService: SentencesService,
     private translationCheckService: TranslationCheckService,
@@ -40,11 +38,29 @@ export class ExerciseService {
       cefrLevel: cefrLevel,
     });
 
+    const isWordRepetition =
+      await this.prismaService.userWordProgress.findFirst({
+        where: {
+          userId,
+          wordId: word.id,
+        },
+      });
+
+    const isGrammarRepetition =
+      await this.prismaService.userGrammarTopicProgress.findFirst({
+        where: {
+          userId,
+          grammarTopicId: grammarTopic.id,
+        },
+      });
+
     const exercise = await this.prismaService.exercise.create({
       data: {
         userId,
         sentenceId: sentence.id,
         exerciseSessionId: sessionId,
+        isWordRepetition: Boolean(isWordRepetition),
+        isGrammarRepetition: Boolean(isGrammarRepetition),
       },
       include: {
         sentence: {
