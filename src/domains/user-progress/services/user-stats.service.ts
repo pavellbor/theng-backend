@@ -192,12 +192,25 @@ export class UserStatsService {
       0,
     );
 
+    const allSessions = await this.prismaService.exerciseSession.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        startedAt: 'desc',
+      },
+    });
+
     return {
       totalExercises,
       totalCorrectExercises,
       accuracy: getPercentage(totalExercises, totalCorrectExercises),
       sessionsCompleted: totalSessions,
       totalTimeSpent: totalTimeSpent / 1000 / 60,
+      sessionsHistory: allSessions.map((session) => ({
+        date: dayjs(session.startedAt).format('YYYY-MM-DD'),
+        exercisesCompleted: session.exercisesCompleted,
+      })),
     };
   }
 }
