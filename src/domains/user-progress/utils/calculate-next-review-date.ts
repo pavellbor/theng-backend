@@ -1,3 +1,5 @@
+import * as dayjs from 'dayjs';
+
 export const REVIEW_INTERVALS_DAYS = [
   1, // После первого повторения - через 1 день
   3, // После второго - через 3 дня
@@ -22,13 +24,11 @@ export function calculateNextReviewDate(
   isCorrect: boolean = true,
   mastery: number = 0,
 ): Date {
-  const now = new Date();
+  const now = dayjs();
 
   // Если ответ неверный, всегда повторяем через 1 день
   if (!isCorrect) {
-    const nextReviewDate = new Date(now);
-    nextReviewDate.setDate(now.getDate() + 1);
-    return nextReviewDate;
+    return now.add(1, 'day').toDate();
   }
 
   // Для правильных ответов используем интервалы из массива,
@@ -54,7 +54,5 @@ export function calculateNextReviewDate(
   // Получаем интервал из массива
   const daysToAdd = REVIEW_INTERVALS_DAYS[intervalIndex];
 
-  const nextReviewDate = new Date(now);
-  nextReviewDate.setDate(now.getDate() + daysToAdd);
-  return nextReviewDate;
+  return now.add(daysToAdd, 'day').toDate();
 }
