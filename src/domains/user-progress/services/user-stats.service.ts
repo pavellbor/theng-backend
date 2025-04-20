@@ -37,8 +37,10 @@ export class UserStatsService {
     return {
       userId,
       mastery: {
-        gt: 0,
         lt: MASTERY_THRESHOLD,
+      },
+      reviewCount: {
+        lt: MIN_REVIEW_COUNT,
       },
     };
   }
