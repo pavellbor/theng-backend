@@ -5,6 +5,9 @@ import { getNextLevel } from '../utils/get-next-level';
 import { getPercentage } from '../utils/get-percentage';
 import * as dayjs from 'dayjs';
 
+const MASTERY_THRESHOLD = 0.8;
+const MIN_REVIEW_COUNT = 3;
+
 @Injectable()
 export class UserStatsService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -16,6 +19,28 @@ export class UserStatsService {
     ]);
 
     return { progress, stats };
+  }
+
+  private getMasteredItemsQuery(userId: number) {
+    return {
+      userId,
+      mastery: {
+        gte: MASTERY_THRESHOLD,
+      },
+      reviewCount: {
+        gte: MIN_REVIEW_COUNT,
+      },
+    };
+  }
+
+  private getInProgressItemsQuery(userId: number) {
+    return {
+      userId,
+      mastery: {
+        gt: 0,
+        lt: MASTERY_THRESHOLD,
+      },
+    };
   }
 
   private async getUserProgressStats(user: User) {
@@ -33,43 +58,21 @@ export class UserStatsService {
     });
 
     const wordsMastered = await this.prismaService.userWordProgress.count({
-      where: {
-        userId,
-        mastery: {
-          gte: 0.8,
-        },
-      },
+      where: this.getMasteredItemsQuery(userId),
     });
 
     const wordsInProgress = await this.prismaService.userWordProgress.count({
-      where: {
-        userId,
-        mastery: {
-          gt: 0,
-          lt: 0.8,
-        },
-      },
+      where: this.getInProgressItemsQuery(userId),
     });
 
     const grammarTopicsInProgress =
       await this.prismaService.userGrammarTopicProgress.count({
-        where: {
-          userId,
-          mastery: {
-            gt: 0,
-            lt: 0.8,
-          },
-        },
+        where: this.getInProgressItemsQuery(userId),
       });
 
     const grammarTopicsMastered =
       await this.prismaService.userGrammarTopicProgress.count({
-        where: {
-          userId,
-          mastery: {
-            gte: 0.8,
-          },
-        },
+        where: this.getMasteredItemsQuery(userId),
       });
 
     const totalWords = await this.prismaService.word.count({
