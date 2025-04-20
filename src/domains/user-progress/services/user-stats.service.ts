@@ -5,7 +5,7 @@ import { getNextLevel } from '../utils/get-next-level';
 import { getPercentage } from '../utils/get-percentage';
 import * as dayjs from 'dayjs';
 
-const MASTERY_THRESHOLD = 0.8;
+const MASTERY_THRESHOLD = 0.6;
 
 @Injectable()
 export class UserStatsService {
@@ -24,7 +24,7 @@ export class UserStatsService {
     return {
       userId,
       mastery: {
-        gte: MASTERY_THRESHOLD,
+        gt: MASTERY_THRESHOLD,
       },
     };
   }
@@ -35,7 +35,7 @@ export class UserStatsService {
       OR: [
         {
           mastery: {
-            lt: MASTERY_THRESHOLD,
+            lte: MASTERY_THRESHOLD,
           },
         },
       ],

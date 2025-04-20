@@ -28,7 +28,7 @@ export class CefrLevelUpdateService {
           cefrLevel: currentLevel,
         },
         mastery: {
-          gt: 0.5,
+          gt: 0.6,
         },
       },
     });
@@ -41,7 +41,7 @@ export class CefrLevelUpdateService {
             cefrLevel: currentLevel,
           },
           mastery: {
-            gt: 0.5,
+            gt: 0.6,
           },
         },
       });
@@ -61,7 +61,7 @@ export class CefrLevelUpdateService {
     const wordProgressRate = wordProgress / totalWords;
     const grammarProgressRate = grammarProgress / totalGrammar;
 
-    if (wordProgressRate >= 0.8 && grammarProgressRate >= 0.8) {
+    if (wordProgressRate === 1 && grammarProgressRate === 1) {
       const nextLevel = this.getNextLevel(currentLevel);
 
       if (nextLevel) {
