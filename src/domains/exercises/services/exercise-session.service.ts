@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { ExerciseSession } from '@prisma/client';
+import { ExerciseSession, Exercise } from '@prisma/client';
 @Injectable()
 export class ExerciseSessionService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -68,6 +68,12 @@ export class ExerciseSessionService {
     });
 
     return this.addDurationAndAccuracy(session);
+  }
+
+  getLastExercise(session: ExerciseSession & { exercises: Exercise[] }) {
+    return session.exercises
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+      .at(-1);
   }
 
   async getSessionHistory(userId: number) {

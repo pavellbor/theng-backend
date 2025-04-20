@@ -34,8 +34,6 @@ export class ExerciseService {
         grammarTopic: grammarTopic.name,
       });
 
-    console.log(generatedSentence);
-
     const sentence = await this.sentencesService.create({
       englishSentence: generatedSentence.englishSentence,
       russianTranslation: generatedSentence.russianTranslation,

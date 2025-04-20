@@ -85,12 +85,7 @@ export class AssessmentService {
       isCorrect,
     );
 
-    const updatedSession1 = this.sessionService.setConfidenceScore(
-      sessionId,
-      confidence,
-    );
-
-    console.log(updatedSession1);
+    this.sessionService.setConfidenceScore(sessionId, confidence);
 
     const nextSentence = this.contentService.getNextSentence(
       level,

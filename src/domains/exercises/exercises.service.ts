@@ -27,7 +27,7 @@ export class ExercisesService {
         activeSession.id,
       );
 
-      const lastExercise = session.exercises.at(-1);
+      const lastExercise = this.exerciseSessionService.getLastExercise(session);
       const isSessionCompleted =
         activeSession.exercisesCompleted >= user.dailyGoal &&
         lastExercise?.lastTranslation;
@@ -73,7 +73,8 @@ export class ExercisesService {
       session.id,
     );
 
-    const exerciseId = sessionDetails.exercises.at(-1)?.id;
+    const exerciseId =
+      this.exerciseSessionService.getLastExercise(sessionDetails)?.id;
 
     if (!exerciseId) {
       throw new BadRequestException('Упражнение не найдено');
@@ -157,7 +158,8 @@ export class ExercisesService {
       session.id,
     );
 
-    const exerciseId = sessionDetails.exercises.at(-1)?.id;
+    const exerciseId =
+      this.exerciseSessionService.getLastExercise(sessionDetails)?.id;
 
     if (!exerciseId) {
       throw new BadRequestException('Упражнение не найдено');
