@@ -12,22 +12,12 @@ export abstract class ContentSelectionService<T> {
       return newContent;
     }
 
-    const nextLevelContent = await this.getNextLevel(userId, cefrLevel);
-    if (nextLevelContent) {
-      return nextLevelContent;
-    }
-
     return this.getExisting(userId);
   }
 
   abstract getReviewDue(userId: number): Promise<T | null>;
 
   abstract getNew(userId: number, cefrLevel: CEFRLevel): Promise<T | null>;
-
-  abstract getNextLevel(
-    userId: number,
-    cefrLevel: CEFRLevel,
-  ): Promise<T | null>;
 
   abstract getExisting(userId: number): Promise<T | null>;
 }

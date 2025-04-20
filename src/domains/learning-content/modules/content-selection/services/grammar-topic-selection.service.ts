@@ -3,29 +3,11 @@ import { CEFRLevel, GrammarTopic } from '@prisma/client';
 import { ContentSelectionService } from './content-selection.abstract';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { getRandomItem } from '../utils/get-random-item';
-import { calculateNextLevel } from '../utils/calculate-next-level';
 
 @Injectable()
 export class GrammarTopicSelectionService extends ContentSelectionService<GrammarTopic> {
   constructor(private prismaService: PrismaService) {
     super();
-  }
-
-  async getForReview(
-    userId: number,
-    cefrLevel: CEFRLevel,
-  ): Promise<GrammarTopic | null> {
-    const reviewDue = await this.getReviewDue(userId);
-    if (reviewDue) {
-      return reviewDue;
-    }
-
-    const newContent = await this.getNew(userId, cefrLevel);
-    if (newContent) {
-      return newContent;
-    }
-
-    return this.getExisting(userId);
   }
 
   async getReviewDue(userId: number): Promise<GrammarTopic | null> {
@@ -70,19 +52,6 @@ export class GrammarTopicSelectionService extends ContentSelectionService<Gramma
     }
 
     return null;
-  }
-
-  async getNextLevel(
-    userId: number,
-    cefrLevel: CEFRLevel,
-  ): Promise<GrammarTopic | null> {
-    const nextLevel = calculateNextLevel(cefrLevel);
-
-    if (!nextLevel) {
-      return null;
-    }
-
-    return this.getNew(userId, nextLevel);
   }
 
   async getExisting(userId: number): Promise<GrammarTopic | null> {

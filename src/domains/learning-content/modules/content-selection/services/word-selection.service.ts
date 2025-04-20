@@ -3,7 +3,6 @@ import { CEFRLevel, Word } from '@prisma/client';
 import { ContentSelectionService } from './content-selection.abstract';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { getRandomItem } from '../utils/get-random-item';
-import { calculateNextLevel } from '../utils/calculate-next-level';
 
 @Injectable()
 export class WordSelectionService extends ContentSelectionService<Word> {
@@ -49,19 +48,6 @@ export class WordSelectionService extends ContentSelectionService<Word> {
     }
 
     return null;
-  }
-
-  async getNextLevel(
-    userId: number,
-    cefrLevel: CEFRLevel,
-  ): Promise<Word | null> {
-    const nextLevel = calculateNextLevel(cefrLevel);
-
-    if (!nextLevel) {
-      return null;
-    }
-
-    return this.getNew(userId, nextLevel);
   }
 
   async getExisting(userId: number): Promise<Word | null> {
