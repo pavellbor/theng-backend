@@ -21,6 +21,14 @@ export class SentenceRdo implements Sentence {
   russianTranslation: string;
 
   @ApiProperty({
+    description: 'Дословный перевод, показывающий грамматическую структуру',
+    example: 'Тот быстрый коричневый лис прыгает через ту ленивую собаку',
+    required: false,
+    nullable: true,
+  })
+  literalTranslation: string | null;
+
+  @ApiProperty({
     description: 'ID грамматической темы',
     example: 1,
   })

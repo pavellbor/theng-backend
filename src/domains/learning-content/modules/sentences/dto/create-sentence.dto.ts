@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CEFRLevel } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateSentenceDto {
   @ApiProperty({
@@ -18,6 +24,15 @@ export class CreateSentenceDto {
   @IsString({ message: 'Перевод должен быть строкой' })
   @IsNotEmpty({ message: 'Перевод не может быть пустым' })
   russianTranslation: string;
+
+  @ApiProperty({
+    description: 'Дословный перевод, показывающий грамматическую структуру',
+    example: 'Тот быстрый коричневый лис прыгает через ту ленивую собаку',
+    required: false,
+  })
+  @IsString({ message: 'Дословный перевод должен быть строкой' })
+  @IsOptional()
+  literalTranslation?: string;
 
   @ApiProperty({
     enum: CEFRLevel,
@@ -52,6 +67,7 @@ export class CreateSentenceDto {
     required: false,
   })
   @IsString({ message: 'Подсказка по слову должна быть строкой' })
+  @IsOptional()
   wordHint?: string;
 
   @ApiProperty({
@@ -60,6 +76,7 @@ export class CreateSentenceDto {
     required: false,
   })
   @IsString({ message: 'Подсказка по грамматике должна быть строкой' })
+  @IsOptional()
   grammarHint?: string;
 
   @ApiProperty({
@@ -68,5 +85,6 @@ export class CreateSentenceDto {
     required: false,
   })
   @IsString({ message: 'Общая подсказка должна быть строкой' })
+  @IsOptional()
   generalHint?: string;
 }

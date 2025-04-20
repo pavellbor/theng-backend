@@ -34,9 +34,12 @@ export class ExerciseService {
         grammarTopic: grammarTopic.name,
       });
 
+    console.log(generatedSentence);
+
     const sentence = await this.sentencesService.create({
       englishSentence: generatedSentence.englishSentence,
       russianTranslation: generatedSentence.russianTranslation,
+      literalTranslation: generatedSentence.literalTranslation,
       grammarTopicId: grammarTopic.id,
       wordId: word.id,
       cefrLevel: cefrLevel,
@@ -186,7 +189,8 @@ export class ExerciseService {
           hintType === HintType.GRAMMAR || hintType === HintType.BOTH
             ? exercise.sentence.grammarHint
             : '',
-        generalHint: hintType === HintType.BOTH ? exercise.sentence.generalHint || '' : '',
+        generalHint:
+          hintType === HintType.BOTH ? exercise.sentence.generalHint || '' : '',
       };
       return storedHint;
     }
