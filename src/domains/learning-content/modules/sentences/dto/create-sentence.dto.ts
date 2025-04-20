@@ -45,4 +45,28 @@ export class CreateSentenceDto {
   @IsNumber({}, { message: 'ID слова должно быть числом' })
   @IsNotEmpty({ message: 'ID слова не может быть пустым' })
   wordId: number;
+
+  @ApiProperty({
+    description: 'Подсказка по слову',
+    example: 'Используйте английское слово "quick" (быстрый) для описания лиса',
+    required: false,
+  })
+  @IsString({ message: 'Подсказка по слову должна быть строкой' })
+  wordHint?: string;
+
+  @ApiProperty({
+    description: 'Подсказка по грамматике',
+    example: 'Используйте Present Simple для описания регулярных действий',
+    required: false,
+  })
+  @IsString({ message: 'Подсказка по грамматике должна быть строкой' })
+  grammarHint?: string;
+
+  @ApiProperty({
+    description: 'Общая подсказка по переводу',
+    example: 'Обратите внимание на порядок слов в английском предложении',
+    required: false,
+  })
+  @IsString({ message: 'Общая подсказка должна быть строкой' })
+  generalHint?: string;
 }

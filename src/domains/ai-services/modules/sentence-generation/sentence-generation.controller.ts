@@ -16,4 +16,3 @@ export class SentenceGenerationController {
     return this.sentenceGenerationService.generateSentence(generateSentenceDto);
   }
 }
-

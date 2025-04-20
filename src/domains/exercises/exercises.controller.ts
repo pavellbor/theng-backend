@@ -7,6 +7,7 @@ import {
   Post,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { ExercisesCheckTranslationDto } from './dto/exercises-check-translation.dto';
 import { ExercisesService } from './exercises.service';
@@ -15,6 +16,7 @@ import { CurrentUser } from 'src/domains/auth/decorators/current-user.decorator'
 import { AuthUser } from 'src/domains/auth/decorators/auth-user.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RequireCefrLevel } from 'src/domains/users/decorators/require-cefr-level.decorator';
+import { ExercisesHintQueryDto } from './dto/exercises-hint.dto';
 
 @Controller('exercises')
 @ApiTags('Обучение')
@@ -69,5 +71,14 @@ export class ExercisesController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.exercisesService.getSessionDetails(userId, id);
+  }
+
+  @Get('hint')
+  @ApiOperation({ summary: 'Получить подсказку к текущему упражнению' })
+  getTranslationHint(
+    @CurrentUser('id') userId: number,
+    @Query() queryDto: ExercisesHintQueryDto,
+  ) {
+    return this.exercisesService.getTranslationHint(userId, queryDto.type);
   }
 }

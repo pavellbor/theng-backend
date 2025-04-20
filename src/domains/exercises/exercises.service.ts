@@ -5,6 +5,8 @@ import { ExerciseSessionService } from './services/exercise-session.service';
 import { ExerciseService } from './services/exercise.service';
 import { ContentSelectionService } from 'src/domains/learning-content/modules/content-selection/content-selection.service';
 import { ensureHasLevel } from '../users/utils/ensure-has-level';
+import { HintType } from '../ai-services/modules/translation-check/interfaces/translation-hint.interface';
+
 @Injectable()
 export class ExercisesService {
   constructor(
@@ -80,13 +82,21 @@ export class ExercisesService {
     const { exercise, translationFeedback } =
       await this.exerciseService.checkAnswer(exerciseId, userTranslation);
 
+    const isGrammarCorrect = exercise.usedGrammarHint
+      ? false
+      : translationFeedback.grammarTopic.isCorrect;
+
+    const isWordCorrect = exercise.usedWordHint
+      ? false
+      : translationFeedback.word.isCorrect;
+
     const progressUpdate =
       await this.userProgressService.recordSentencePracticeResult({
         userId: user.id,
         grammarTopicId: exercise.sentence.grammarTopicId,
         wordId: exercise.sentence.wordId,
-        isGrammarTopicCorrect: translationFeedback.grammarTopic.isCorrect,
-        isWordCorrect: translationFeedback.word.isCorrect,
+        isGrammarTopicCorrect: isGrammarCorrect,
+        isWordCorrect: isWordCorrect,
       });
 
     const isCorrect = translationFeedback.overall.isCorrect;
@@ -133,6 +143,27 @@ export class ExercisesService {
 
   async getSessionDetails(userId: number, sessionId: number) {
     return this.exerciseSessionService.getSessionDetails(userId, sessionId);
+  }
+
+  async getTranslationHint(userId: number, hintType: HintType = HintType.BOTH) {
+    const session = await this.exerciseSessionService.getActiveSession(userId);
+
+    if (!session) {
+      throw new BadRequestException('Сессия упражнений не найдена');
+    }
+
+    const sessionDetails = await this.exerciseSessionService.getSessionDetails(
+      userId,
+      session.id,
+    );
+
+    const exerciseId = sessionDetails.exercises.at(-1)?.id;
+
+    if (!exerciseId) {
+      throw new BadRequestException('Упражнение не найдено');
+    }
+
+    return this.exerciseService.getTranslationHint(exerciseId, hintType);
   }
 
   private async getNextExercise(user: User, sessionId: number) {

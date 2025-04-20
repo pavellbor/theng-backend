@@ -15,5 +15,10 @@ export class TranslationCheckController {
   checkTranslation(@Body() checkTranslationDto: CheckTranslationDto) {
     return this.translationCheckService.checkTranslation(checkTranslationDto);
   }
-}
 
+  @Post('hint')
+  @ApiOperation({ summary: 'Получить подсказку для перевода' })
+  getTranslationHint(@Body() checkTranslationDto: CheckTranslationDto) {
+    return this.translationCheckService.getTranslationHint(checkTranslationDto);
+  }
+}

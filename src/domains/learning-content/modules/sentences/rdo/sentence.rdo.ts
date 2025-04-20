@@ -39,6 +39,30 @@ export class SentenceRdo implements Sentence {
   cefrLevel: CEFRLevel;
 
   @ApiProperty({
+    description: 'Подсказка по слову',
+    example: 'Используйте английское слово "quick" (быстрый) для описания лиса',
+    required: false,
+    nullable: true,
+  })
+  wordHint: string | null;
+
+  @ApiProperty({
+    description: 'Подсказка по грамматике',
+    example: 'Используйте Present Simple для описания регулярных действий',
+    required: false,
+    nullable: true,
+  })
+  grammarHint: string | null;
+
+  @ApiProperty({
+    description: 'Общая подсказка по переводу',
+    example: 'Обратите внимание на порядок слов в английском предложении',
+    required: false,
+    nullable: true,
+  })
+  generalHint: string | null;
+
+  @ApiProperty({
     description: 'Дата создания предложения',
     example: '2021-01-01T00:00:00.000Z',
   })

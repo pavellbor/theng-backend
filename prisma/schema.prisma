@@ -56,6 +56,9 @@ model Sentence {
   wordId             Int
   word               Word         @relation(fields: [wordId], references: [id], onDelete: Cascade)
   cefrLevel          CEFRLevel
+  wordHint           String?
+  grammarHint        String?
+  generalHint        String?
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
   exercises          Exercise[]
@@ -131,6 +134,8 @@ model Exercise {
   grammarCorrect      Boolean         @default(false)
   isWordRepetition    Boolean         @default(false)
   isGrammarRepetition Boolean         @default(false)
+  usedWordHint        Boolean         @default(false)
+  usedGrammarHint     Boolean         @default(false)
 
   @@unique([userId, sentenceId, exerciseSessionId])
   @@index([userId, isCorrect])
