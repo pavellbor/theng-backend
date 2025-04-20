@@ -36,12 +36,18 @@ export class UserStatsService {
   private getInProgressItemsQuery(userId: number) {
     return {
       userId,
-      mastery: {
-        lt: MASTERY_THRESHOLD,
-      },
-      reviewCount: {
-        lt: MIN_REVIEW_COUNT,
-      },
+      OR: [
+        {
+          mastery: {
+            lt: MASTERY_THRESHOLD,
+          },
+        },
+        {
+          reviewCount: {
+            lt: MIN_REVIEW_COUNT,
+          },
+        },
+      ],
     };
   }
 
