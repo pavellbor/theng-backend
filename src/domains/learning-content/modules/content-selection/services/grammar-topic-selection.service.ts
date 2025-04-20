@@ -11,6 +11,23 @@ export class GrammarTopicSelectionService extends ContentSelectionService<Gramma
     super();
   }
 
+  async getForReview(
+    userId: number,
+    cefrLevel: CEFRLevel,
+  ): Promise<GrammarTopic | null> {
+    const reviewDue = await this.getReviewDue(userId);
+    if (reviewDue) {
+      return reviewDue;
+    }
+
+    const newContent = await this.getNew(userId, cefrLevel);
+    if (newContent) {
+      return newContent;
+    }
+
+    return this.getExisting(userId);
+  }
+
   async getReviewDue(userId: number): Promise<GrammarTopic | null> {
     const progressItem =
       await this.prismaService.userGrammarTopicProgress.findFirst({

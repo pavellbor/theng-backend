@@ -6,7 +6,6 @@ import { getPercentage } from '../utils/get-percentage';
 import * as dayjs from 'dayjs';
 
 const MASTERY_THRESHOLD = 0.8;
-const MIN_REVIEW_COUNT = 3;
 
 @Injectable()
 export class UserStatsService {
@@ -27,9 +26,6 @@ export class UserStatsService {
       mastery: {
         gte: MASTERY_THRESHOLD,
       },
-      reviewCount: {
-        gte: MIN_REVIEW_COUNT,
-      },
     };
   }
 
@@ -40,11 +36,6 @@ export class UserStatsService {
         {
           mastery: {
             lt: MASTERY_THRESHOLD,
-          },
-        },
-        {
-          reviewCount: {
-            lt: MIN_REVIEW_COUNT,
           },
         },
       ],
