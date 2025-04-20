@@ -8,7 +8,7 @@ import { RolesGuard } from './guards/roles.guard';
 
 const jwtModule = JwtModule.register({
   secret: process.env.JWT_SECRET,
-  signOptions: { expiresIn: '24h' },
+  signOptions: { expiresIn: '7d' },
 });
 
 @Global()
