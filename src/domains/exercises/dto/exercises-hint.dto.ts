@@ -5,7 +5,7 @@ import { HintType } from 'src/domains/ai-services/modules/translation-check/inte
 export class ExercisesHintQueryDto {
   @ApiProperty({
     enum: HintType,
-    description: 'Тип подсказки (слово, грамматика или оба)',
+    description: 'Тип подсказки (слово, грамматика, оба или перевод)',
     required: false,
     default: HintType.BOTH,
   })

@@ -137,6 +137,7 @@ model Exercise {
   isGrammarRepetition Boolean         @default(false)
   usedWordHint        Boolean         @default(false)
   usedGrammarHint     Boolean         @default(false)
+  usedTranslationHint Boolean         @default(false)
 
   @@unique([userId, sentenceId, exerciseSessionId])
   @@index([userId, isCorrect])

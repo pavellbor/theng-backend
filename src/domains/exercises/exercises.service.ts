@@ -83,13 +83,23 @@ export class ExercisesService {
     const { exercise, translationFeedback } =
       await this.exerciseService.checkAnswer(exerciseId, userTranslation);
 
-    const isGrammarCorrect = exercise.usedGrammarHint
-      ? false
-      : translationFeedback.grammarTopic.isCorrect;
+    let isGrammarCorrect = translationFeedback.grammarTopic.isCorrect;
+    let isWordCorrect = translationFeedback.word.isCorrect;
+    let isCorrect = translationFeedback.overall.isCorrect;
 
-    const isWordCorrect = exercise.usedWordHint
-      ? false
-      : translationFeedback.word.isCorrect;
+    if (exercise.usedGrammarHint) {
+      isGrammarCorrect = false;
+    }
+
+    if (exercise.usedWordHint) {
+      isWordCorrect = false;
+    }
+
+    if (exercise.usedTranslationHint) {
+      isCorrect = false;
+      isWordCorrect = false;
+      isGrammarCorrect = false;
+    }
 
     const progressUpdate =
       await this.userProgressService.recordSentencePracticeResult({
@@ -99,8 +109,6 @@ export class ExercisesService {
         isGrammarTopicCorrect: isGrammarCorrect,
         isWordCorrect: isWordCorrect,
       });
-
-    const isCorrect = translationFeedback.overall.isCorrect;
 
     const updatedSession =
       await this.exerciseSessionService.recordExerciseResult(

@@ -170,11 +170,26 @@ export class ExerciseService {
       updateData.usedGrammarHint = true;
     }
 
+    // Новая логика для фиксации показа перевода
+    if (hintType === HintType.TRANSLATION) {
+      updateData.usedTranslationHint = true;
+    }
+
     // Обновляем упражнение, устанавливая флаги использования подсказок в зависимости от типа
     await this.prismaService.exercise.update({
       where: { id: exerciseId },
       data: updateData,
     });
+
+    // Если запрошен перевод, возвращаем только перевод
+    if (hintType === HintType.TRANSLATION) {
+      return {
+        wordHint: '',
+        grammarHint: '',
+        generalHint: '',
+        translationHint: exercise.sentence.englishSentence,
+      };
+    }
 
     // Если у предложения уже есть подсказки, возвращаем их в зависимости от запрошенного типа
     if (exercise.sentence.wordHint && exercise.sentence.grammarHint) {
