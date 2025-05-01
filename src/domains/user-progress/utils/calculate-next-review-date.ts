@@ -27,7 +27,7 @@ export function calculateNextReviewDate(
   const now = dayjs();
 
   if (!isCorrect) {
-    return now.toDate();
+    return now.add(1, 'minute').toDate();
   }
 
   // Для правильных ответов используем интервалы из массива,
