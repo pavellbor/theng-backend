@@ -26,9 +26,8 @@ export function calculateNextReviewDate(
 ): Date {
   const now = dayjs();
 
-  // Если ответ неверный, всегда повторяем через 1 день
   if (!isCorrect) {
-    return now.add(1, 'day').toDate();
+    return now.toDate();
   }
 
   // Для правильных ответов используем интервалы из массива,
