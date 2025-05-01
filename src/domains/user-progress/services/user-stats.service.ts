@@ -32,13 +32,9 @@ export class UserStatsService {
   private getInProgressItemsQuery(userId: number) {
     return {
       userId,
-      OR: [
-        {
-          mastery: {
-            lte: MASTERY_THRESHOLD,
-          },
-        },
-      ],
+      mastery: {
+        lte: MASTERY_THRESHOLD,
+      },
     };
   }
 
