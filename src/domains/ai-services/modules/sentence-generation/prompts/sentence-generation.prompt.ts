@@ -66,7 +66,7 @@ export const sentenceGenerationPrompt: PromptTemplate<GenerateSentenceParams> =
 **ФОРМАТ ОТВЕТА (ТОЛЬКО JSON)**:
 \`\`\`json
 {
-  "russianSentence": "Русское предложение для перевода",
+  "russianTranslation": "Русское предложение для перевода",
   "englishSentence": "Правильный английский перевод",
   "translationTips": "Подсказка на РУССКОМ языке о ключевой грамматике",
   "literalTranslation": "Дословный перевод для понимания структуры"
