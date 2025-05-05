@@ -98,6 +98,13 @@ export class GenerateSentencesDto {
         grammarTopic: 'Present Continuous',
         cefrLevel: 'A1',
       },
+      {
+        word: 'north',
+        partOfSpeech: 'adverb',
+        russianTranslation: 'на север',
+        grammarTopic: 'Irregular Plural Nouns',
+        cefrLevel: 'A1',
+      },
     ],
   })
   @IsArray()
