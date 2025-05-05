@@ -80,8 +80,16 @@ export class ExercisesService {
       throw new BadRequestException('Упражнение не найдено');
     }
 
-    const { exercise, translationFeedback } =
-      await this.exerciseService.checkAnswer(exerciseId, userTranslation);
+    const isLastExercise = session.exercisesCompleted + 1 >= user.dailyGoal;
+
+    const [{ exercise, translationFeedback }, nextExercise] = await Promise.all(
+      [
+        this.exerciseService.checkAnswer(exerciseId, userTranslation),
+        isLastExercise
+          ? Promise.resolve(null)
+          : this.getNextExercise(user, session.id),
+      ],
+    );
 
     let isGrammarCorrect = translationFeedback.grammarTopic.isCorrect;
     let isWordCorrect = translationFeedback.word.isCorrect;
@@ -117,7 +125,7 @@ export class ExercisesService {
         isCorrect,
       );
 
-    if (updatedSession.exercisesCompleted >= user.dailyGoal) {
+    if (isLastExercise) {
       return {
         session: updatedSession,
         isCorrect,
@@ -128,8 +136,6 @@ export class ExercisesService {
         exercise: null,
       };
     }
-
-    const nextExercise = await this.getNextExercise(user, session.id);
 
     return {
       session: updatedSession,

@@ -105,6 +105,13 @@ export class GenerateSentencesDto {
         grammarTopic: 'Irregular Plural Nouns',
         cefrLevel: 'A1',
       },
+      {
+        word: 'yesterday',
+        partOfSpeech: 'noun',
+        russianTranslation: 'вчера',
+        grammarTopic: 'Prepositions of Time',
+        cefrLevel: 'A1',
+      },
     ],
   })
   @IsArray()
