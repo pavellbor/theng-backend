@@ -3,6 +3,8 @@ import { CEFRLevel } from '@prisma/client';
 import { ensureHasLevel } from 'src/domains/users/utils/ensure-has-level';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
+const MASTERY_THRESHOLD = 0.6;
+
 @Injectable()
 export class CefrLevelUpdateService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -28,7 +30,7 @@ export class CefrLevelUpdateService {
           cefrLevel: currentLevel,
         },
         mastery: {
-          gt: 0.6,
+          gt: MASTERY_THRESHOLD,
         },
       },
     });
@@ -41,7 +43,7 @@ export class CefrLevelUpdateService {
             cefrLevel: currentLevel,
           },
           mastery: {
-            gt: 0.6,
+            gt: MASTERY_THRESHOLD,
           },
         },
       });
