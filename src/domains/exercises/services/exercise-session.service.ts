@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { ExerciseSession, Exercise } from '@prisma/client';
+import { ExerciseSession } from '@prisma/client';
 @Injectable()
 export class ExerciseSessionService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async startSession(userId: number): Promise<ExerciseSession> {
+  async startSession(userId: number) {
     return this.prismaService.exerciseSession.create({
       data: {
         userId,
@@ -39,7 +39,7 @@ export class ExerciseSessionService {
     userId: number,
     sessionId: number,
     isCorrect: boolean,
-  ): Promise<ExerciseSession> {
+  ) {
     return this.prismaService.exerciseSession.update({
       where: { id: sessionId, userId },
       data: {
@@ -55,6 +55,7 @@ export class ExerciseSessionService {
       where: { id: sessionId, userId },
       include: {
         exercises: {
+          orderBy: { createdAt: 'asc' },
           include: {
             sentence: {
               include: {
@@ -70,10 +71,14 @@ export class ExerciseSessionService {
     return this.addDurationAndAccuracy(session);
   }
 
-  getLastExercise(session: ExerciseSession & { exercises: Exercise[] }) {
-    return session.exercises
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
-      .at(-1);
+  async getExercises(userId: number, sessionId: number) {
+    const sessionDetails = await this.getSessionDetails(userId, sessionId);
+    return sessionDetails.exercises;
+  }
+
+  async getCurrentExercise(userId: number, sessionId: number) {
+    const sessionDetails = await this.getSessionDetails(userId, sessionId);
+    return sessionDetails.exercises[sessionDetails.exercisesCompleted];
   }
 
   async getSessionHistory(userId: number) {

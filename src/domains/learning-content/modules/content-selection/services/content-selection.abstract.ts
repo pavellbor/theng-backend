@@ -1,23 +1,52 @@
 import { CEFRLevel } from '@prisma/client';
 
 export abstract class ContentSelectionService<T> {
-  async getForReview(userId: number, cefrLevel: CEFRLevel): Promise<T | null> {
-    const reviewDue = await this.getReviewDue(userId);
+  async getForReview(
+    userId: number,
+    cefrLevel: CEFRLevel,
+    count: number = 1,
+  ): Promise<T[]> {
+    const result = [] as T[];
+    const reviewDue = await this.getReviewDue(userId, count);
     if (reviewDue) {
-      return reviewDue;
+      result.push(...reviewDue);
     }
 
-    const newContent = await this.getNew(userId, cefrLevel);
+    if (result.length >= count) {
+      return result;
+    }
+
+    const newContent = await this.getNew(
+      userId,
+      cefrLevel,
+      count - result.length,
+    );
     if (newContent) {
-      return newContent;
+      result.push(...newContent);
     }
 
-    return this.getExisting(userId);
+    if (result.length >= count) {
+      return result;
+    }
+
+    const existingContent = await this.getExisting(
+      userId,
+      count - result.length,
+    );
+    if (existingContent) {
+      result.push(...existingContent);
+    }
+
+    return result;
   }
 
-  abstract getReviewDue(userId: number): Promise<T | null>;
+  abstract getReviewDue(userId: number, count: number): Promise<T[]>;
 
-  abstract getNew(userId: number, cefrLevel: CEFRLevel): Promise<T | null>;
+  abstract getNew(
+    userId: number,
+    cefrLevel: CEFRLevel,
+    count: number,
+  ): Promise<T[]>;
 
-  abstract getExisting(userId: number): Promise<T | null>;
+  abstract getExisting(userId: number, count: number): Promise<T[]>;
 }

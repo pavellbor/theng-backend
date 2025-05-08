@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CEFRLevel, Word } from '@prisma/client';
 import { ContentSelectionService } from './content-selection.abstract';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { getRandomItem } from '../utils/get-random-item';
+import { getRandomItems } from '../utils/get-random-item';
 
 @Injectable()
 export class WordSelectionService extends ContentSelectionService<Word> {
@@ -10,8 +10,8 @@ export class WordSelectionService extends ContentSelectionService<Word> {
     super();
   }
 
-  async getReviewDue(userId: number): Promise<Word | null> {
-    const progressItem = await this.prismaService.userWordProgress.findFirst({
+  async getReviewDue(userId: number, count: number): Promise<Word[]> {
+    const progressItems = await this.prismaService.userWordProgress.findMany({
       where: {
         userId,
         nextReviewDate: {
@@ -24,12 +24,17 @@ export class WordSelectionService extends ContentSelectionService<Word> {
       include: {
         word: true,
       },
+      take: count,
     });
 
-    return progressItem?.word ?? null;
+    return progressItems.map((item) => item.word);
   }
 
-  async getNew(userId: number, cefrLevel: CEFRLevel): Promise<Word | null> {
+  async getNew(
+    userId: number,
+    cefrLevel: CEFRLevel,
+    count: number,
+  ): Promise<Word[]> {
     const newWords = await this.prismaService.word.findMany({
       where: {
         cefrLevel: cefrLevel,
@@ -44,14 +49,14 @@ export class WordSelectionService extends ContentSelectionService<Word> {
     });
 
     if (newWords.length > 0) {
-      return getRandomItem(newWords);
+      return getRandomItems(newWords, count);
     }
 
-    return null;
+    return [];
   }
 
-  async getExisting(userId: number): Promise<Word | null> {
-    const userWord = await this.prismaService.userWordProgress.findFirst({
+  async getExisting(userId: number, count: number): Promise<Word[]> {
+    const userWords = await this.prismaService.userWordProgress.findMany({
       where: {
         userId,
       },
@@ -61,8 +66,9 @@ export class WordSelectionService extends ContentSelectionService<Word> {
       orderBy: {
         mastery: 'asc',
       },
+      take: count,
     });
 
-    return userWord?.word ?? null;
+    return userWords.map((item) => item.word);
   }
 }

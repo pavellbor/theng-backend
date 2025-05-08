@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CEFRLevel, GrammarTopic } from '@prisma/client';
 import { ContentSelectionService } from './content-selection.abstract';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { getRandomItem } from '../utils/get-random-item';
+import { getRandomItems } from '../utils/get-random-item';
 
 @Injectable()
 export class GrammarTopicSelectionService extends ContentSelectionService<GrammarTopic> {
@@ -10,9 +10,9 @@ export class GrammarTopicSelectionService extends ContentSelectionService<Gramma
     super();
   }
 
-  async getReviewDue(userId: number): Promise<GrammarTopic | null> {
-    const progressItem =
-      await this.prismaService.userGrammarTopicProgress.findFirst({
+  async getReviewDue(userId: number, count: number): Promise<GrammarTopic[]> {
+    const progressItems =
+      await this.prismaService.userGrammarTopicProgress.findMany({
         where: {
           userId,
           nextReviewDate: {
@@ -25,16 +25,18 @@ export class GrammarTopicSelectionService extends ContentSelectionService<Gramma
         include: {
           grammarTopic: true,
         },
+        take: count,
       });
 
-    return progressItem?.grammarTopic ?? null;
+    return progressItems.map((item) => item.grammarTopic);
   }
 
   async getNew(
     userId: number,
     cefrLevel: CEFRLevel,
-  ): Promise<GrammarTopic | null> {
-    const newWords = await this.prismaService.grammarTopic.findMany({
+    count: number,
+  ): Promise<GrammarTopic[]> {
+    const newGrammarTopics = await this.prismaService.grammarTopic.findMany({
       where: {
         cefrLevel: cefrLevel,
         NOT: {
@@ -47,16 +49,16 @@ export class GrammarTopicSelectionService extends ContentSelectionService<Gramma
       },
     });
 
-    if (newWords.length > 0) {
-      return getRandomItem(newWords);
+    if (newGrammarTopics.length > 0) {
+      return getRandomItems(newGrammarTopics, count);
     }
 
-    return null;
+    return [];
   }
 
-  async getExisting(userId: number): Promise<GrammarTopic | null> {
-    const userWord =
-      await this.prismaService.userGrammarTopicProgress.findFirst({
+  async getExisting(userId: number, count: number): Promise<GrammarTopic[]> {
+    const userGrammarTopics =
+      await this.prismaService.userGrammarTopicProgress.findMany({
         where: {
           userId,
         },
@@ -66,8 +68,9 @@ export class GrammarTopicSelectionService extends ContentSelectionService<Gramma
         orderBy: {
           mastery: 'asc',
         },
+        take: count,
       });
 
-    return userWord?.grammarTopic ?? null;
+    return userGrammarTopics.map((item) => item.grammarTopic);
   }
 }

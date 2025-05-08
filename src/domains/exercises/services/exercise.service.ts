@@ -80,6 +80,20 @@ export class ExerciseService {
     return exercise;
   }
 
+  async getExercisesBySessionId(sessionId: number) {
+    return this.prismaService.exercise.findMany({
+      where: { exerciseSessionId: sessionId },
+      include: {
+        sentence: {
+          include: {
+            word: true,
+            grammarTopic: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
   async checkAnswer(exerciseId: number, userTranslation: string) {
     const exercise = await this.getExercise(exerciseId);
 

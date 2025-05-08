@@ -22,15 +22,16 @@ export class ExercisesService {
     );
 
     if (activeSession) {
-      const session = await this.exerciseSessionService.getSessionDetails(
+      const exercises = await this.exerciseSessionService.getExercises(
         user.id,
         activeSession.id,
       );
-
-      const lastExercise = this.exerciseSessionService.getLastExercise(session);
+      const lastExercise = await this.exerciseSessionService.getCurrentExercise(
+        user.id,
+        activeSession.id,
+      );
       const isSessionCompleted =
-        activeSession.exercisesCompleted >= user.dailyGoal &&
-        lastExercise?.lastTranslation;
+        activeSession.exercisesCompleted >= exercises.length;
 
       return {
         session: activeSession,
@@ -40,11 +41,13 @@ export class ExercisesService {
     }
 
     const session = await this.exerciseSessionService.startSession(user.id);
-    const exercise = await this.getNextExercise(user, session.id);
+    await this.generateExercises(user, session.id);
+    const currentExercise =
+      await this.exerciseSessionService.getCurrentExercise(user.id, session.id);
 
     return {
       session,
-      exercise,
+      exercise: currentExercise,
       isCompleted: false,
     };
   }
@@ -68,28 +71,18 @@ export class ExercisesService {
       throw new BadRequestException('Сессия упражнений не найдена');
     }
 
-    const sessionDetails = await this.exerciseSessionService.getSessionDetails(
-      user.id,
-      session.id,
-    );
+    const currentExercise =
+      await this.exerciseSessionService.getCurrentExercise(user.id, session.id);
 
-    const exerciseId =
-      this.exerciseSessionService.getLastExercise(sessionDetails)?.id;
-
-    if (!exerciseId) {
+    if (!currentExercise) {
       throw new BadRequestException('Упражнение не найдено');
     }
 
-    const isLastExercise = session.exercisesCompleted + 1 >= user.dailyGoal;
-
-    const [{ exercise, translationFeedback }, nextExercise] = await Promise.all(
-      [
-        this.exerciseService.checkAnswer(exerciseId, userTranslation),
-        isLastExercise
-          ? Promise.resolve(null)
-          : this.getNextExercise(user, session.id),
-      ],
-    );
+    const { exercise, translationFeedback } =
+      await this.exerciseService.checkAnswer(
+        currentExercise.id,
+        userTranslation,
+      );
 
     let isGrammarCorrect = translationFeedback.grammarTopic.isCorrect;
     let isWordCorrect = translationFeedback.word.isCorrect;
@@ -125,7 +118,11 @@ export class ExercisesService {
         isCorrect,
       );
 
-    if (isLastExercise) {
+    const exercises = await this.exerciseService.getExercisesBySessionId(
+      session.id,
+    );
+
+    if (updatedSession.exercisesCompleted >= exercises.length) {
       return {
         session: updatedSession,
         isCorrect,
@@ -136,6 +133,11 @@ export class ExercisesService {
         exercise: null,
       };
     }
+
+    const nextExercise = await this.exerciseSessionService.getCurrentExercise(
+      user.id,
+      updatedSession.id,
+    );
 
     return {
       session: updatedSession,
@@ -167,41 +169,44 @@ export class ExercisesService {
       throw new BadRequestException('Сессия упражнений не найдена');
     }
 
-    const sessionDetails = await this.exerciseSessionService.getSessionDetails(
-      userId,
-      session.id,
-    );
+    const currentExercise =
+      await this.exerciseSessionService.getCurrentExercise(userId, session.id);
 
-    const exerciseId =
-      this.exerciseSessionService.getLastExercise(sessionDetails)?.id;
-
-    if (!exerciseId) {
+    if (!currentExercise) {
       throw new BadRequestException('Упражнение не найдено');
     }
 
-    return this.exerciseService.getTranslationHint(exerciseId, hintType);
+    return this.exerciseService.getTranslationHint(
+      currentExercise.id,
+      hintType,
+    );
   }
 
-  private async getNextExercise(user: User, sessionId: number) {
+  private async generateExercises(user: User, sessionId: number) {
     const userWithCefrLevel = ensureHasLevel(
       user,
       'Пользователь должен пройти тестирование перед началом упражнений',
     );
 
-    const { word, grammarTopic } =
+    const { words, grammarTopics } =
       await this.contentSelectionService.getContentForReview(
         user.id,
         userWithCefrLevel.cefrLevel,
+        user.dailyGoal,
       );
 
-    const exercise = await this.exerciseService.generateExercise(
-      sessionId,
-      user.id,
-      userWithCefrLevel.cefrLevel,
-      word,
-      grammarTopic,
+    const exercises = await Promise.all(
+      words.map((word, index) =>
+        this.exerciseService.generateExercise(
+          sessionId,
+          user.id,
+          userWithCefrLevel.cefrLevel,
+          word,
+          grammarTopics[index],
+        ),
+      ),
     );
 
-    return exercise;
+    return exercises;
   }
 }
