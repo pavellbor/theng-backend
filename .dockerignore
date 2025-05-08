@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore
+README.md
+dist
+# Добавьте сюда любые другие файлы или папки, которые не нужны в Docker-образе 
