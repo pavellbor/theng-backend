@@ -112,6 +112,13 @@ export class GenerateSentencesDto {
         grammarTopic: 'Prepositions of Time',
         cefrLevel: 'A1',
       },
+      {
+        word: 'change',
+        partOfSpeech: 'noun',
+        russianTranslation: 'перемена',
+        grammarTopic: 'Prepositions of Time',
+        cefrLevel: 'A1',
+      },
     ],
   })
   @IsArray()
