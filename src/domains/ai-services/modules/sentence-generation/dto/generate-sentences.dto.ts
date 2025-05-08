@@ -126,6 +126,13 @@ export class GenerateSentencesDto {
         grammarTopic: 'Questions - Closed',
         cefrLevel: 'A1',
       },
+      {
+        word: 'student',
+        partOfSpeech: 'noun',
+        russianTranslation: 'студент',
+        grammarTopic: 'Past Simple of "be"',
+        cefrLevel: 'A1',
+      },
     ],
   })
   @IsArray()
